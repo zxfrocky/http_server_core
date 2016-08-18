@@ -36,7 +36,7 @@ typedef struct SThreadArg
 
 #define MAX_WORK_THERAD_NUM 32
 
-//TCP»á»°×é 
+//TCPä¼šè¯ç»„ 
 class CTcpGroup
 {
 friend class CTcpServer;
@@ -45,103 +45,103 @@ public:
 	CTcpGroup();
 	~CTcpGroup();
 
-	//Æô¶¯·şÎñ,model = 1,ÇÀÕ¼Ê½,²»±£Ö¤Ê±ĞòĞÔ£¬¿ÉÒÔ³ä·ÖÀûÓÃcpu;model=2 ·ÖÅäÊ½£¬±£Ö¤Ê±ĞòĞÔ,need_response---¶ÔÓÚÎŞĞ§µÄÇëÇóÊÇ·ñ»Ø¸´
+	//å¯åŠ¨æœåŠ¡,model = 1,æŠ¢å å¼,ä¸ä¿è¯æ—¶åºæ€§ï¼Œå¯ä»¥å……åˆ†åˆ©ç”¨cpu;model=2 åˆ†é…å¼ï¼Œä¿è¯æ—¶åºæ€§,need_response---å¯¹äºæ— æ•ˆçš„è¯·æ±‚æ˜¯å¦å›å¤
 	bool Start( void *server, int32_t cpu_idx,int thread_num ,int32_t cpu_num,int32_t model,bool need_response);
-	//Í£Ö¹·şÎñ
+	//åœæ­¢æœåŠ¡
 	void Stop();
-	//ÊÇ·ñÒÑ¾­³õÊ¼»¯
+	//æ˜¯å¦å·²ç»åˆå§‹åŒ–
 	bool IsStarted();
 
 	void *GetServer();
 
-	//Ìí¼ÓĞÂÁ¬½Ó
+	//æ·»åŠ æ–°è¿æ¥
 	void SetLinkBorn( STcpLink link );
-	//ÒªÇólinkËÀÍö
+	//è¦æ±‚linkæ­»äº¡
 	bool SetLinkDead( STcpLink link );
-	//Ñ°ÕÒÁ¬½Ó£¬ÒÑ¼ÓËøÏß³Ì°²È«
-	void* SearchLink( SOCKET *skt, CTcpSession **session );
+	//å¯»æ‰¾è¿æ¥ï¼Œå·²åŠ é”çº¿ç¨‹å®‰å…¨
+	void* SearchLink( uint64_t *skt_idx, CTcpSession **session );
 
-	//·¢ËÍÊı¾İ£¬ËÍÈë»º³åÁ¢¼´·µ»Ø£¬ÒÑ¼ÓËøÏß³Ì°²È«
+	//å‘é€æ•°æ®ï¼Œé€å…¥ç¼“å†²ç«‹å³è¿”å›ï¼Œå·²åŠ é”çº¿ç¨‹å®‰å…¨
 	bool PostData( SPacketHeader& packet_header, char_t *buf, int32_t size );
 
-	uint32_t SetTimer(uint64_t skt_idx,void *position,int32_t timems = 60000);//³¬Ê±Ä¬ÈÏÒ»·ÖÖÓ
-	//ÉèÖÃÊÂ¼ş
+	uint32_t SetTimer(uint64_t skt_idx,void *position,int32_t timems = 60000);//è¶…æ—¶é»˜è®¤ä¸€åˆ†é’Ÿ
+	//è®¾ç½®äº‹ä»¶
 	void SetEvent(int32_t fd,int ctrl,int event,void *ptr_param,int fd_param);
-	//È¡Ïû³¬Ê±¼ì²â	
+	//å–æ¶ˆè¶…æ—¶æ£€æµ‹	
 	void CancelTimer(uint32_t timerid);
-	//´¦Àí³¬Ê±	
+	//å¤„ç†è¶…æ—¶	
 	void HandleTimeout();
 
 	void GetSocket();
-	bool AddRecvBuffer(SPacket& buffer);//ÍùÇÀÕ¼Ê½¶ÓÁĞÀïËÍ,ÒıÓÃ¿ÉÒÔ¼õÉÙ¿½±´
-	bool AddRecvBufferToThreadQueue(SPacket& buffer);//Íù·ÖÅäÊ½µÄÃ¿¸öÏß³Ì×¨ÊôµÄ¶ÓÁĞÀïËÍ£¬ÒıÓÃ¿ÉÒÔ¼õÉÙ¿½±´
-	//»ñÈ¡´¦Àí·½Ê½
+	bool AddRecvBuffer(SPacket& buffer);//å¾€æŠ¢å å¼é˜Ÿåˆ—é‡Œé€,å¼•ç”¨å¯ä»¥å‡å°‘æ‹·è´
+	bool AddRecvBufferToThreadQueue(SPacket& buffer);//å¾€åˆ†é…å¼çš„æ¯ä¸ªçº¿ç¨‹ä¸“å±çš„é˜Ÿåˆ—é‡Œé€ï¼Œå¼•ç”¨å¯ä»¥å‡å°‘æ‹·è´
+	//è·å–å¤„ç†æ–¹å¼
 	int32_t GetModel();
-	//CTcpCache m_innerCache;//ÊäÈë»º³åÇø
-	CTcpCache <SPacketHeader> m_outerCache;//Êä³ö»º³åÇø
-	bool m_need_response;//µ±Ã»ÓĞÆ¥ÅäµÄÇëÇóÊÇ£¬ÊÇ·ñĞèÒª¸ø¿Í»§¶Ë»Ø´ğ
-	/*¹©ÊÕÊı¾İÊ±Ê¹ÓÃ*/
+	//CTcpCache m_innerCache;//è¾“å…¥ç¼“å†²åŒº
+	CTcpCache <SPacketHeader> m_outerCache;//è¾“å‡ºç¼“å†²åŒº
+	bool m_need_response;//å½“æ²¡æœ‰åŒ¹é…çš„è¯·æ±‚æ˜¯ï¼Œæ˜¯å¦éœ€è¦ç»™å®¢æˆ·ç«¯å›ç­”
+	/*ä¾›æ”¶æ•°æ®æ—¶ä½¿ç”¨*/
 	char_t *m_recv_buf;
 	int32_t m_recv_bufsize;
 
 private:
-	CXtcQueue<STcpLink> m_newQueue;//ĞÂÁ¬½Ó
-	CXtcSequence<CTcpSession*> m_sessions;//ËùÓĞ»î¶¯¿Í»§¶Ë
-	CXtcArray<CTcpSession*> m_dumps;//¿Í»§¶ËÁ¬½Ó»ØÊÕ³Ø
+	CXtcQueue<STcpLink> m_newQueue;//æ–°è¿æ¥
+	CXtcSequence<CTcpSession*> m_sessions;//æ‰€æœ‰æ´»åŠ¨å®¢æˆ·ç«¯
+	CXtcArray<CTcpSession*> m_dumps;//å®¢æˆ·ç«¯è¿æ¥å›æ”¶æ± 
 
-	void *m_epoll;//epoll¾ä±ú
-	//void *m_work_thread[MAX_WORK_THERAD_NUM];//¹¤×÷Ïß³Ì
+	void *m_epoll;//epollå¥æŸ„
+	//void *m_work_thread[MAX_WORK_THERAD_NUM];//å·¥ä½œçº¿ç¨‹
 	CXtcArray<SThreadArg*> m_work_thread;
-	void *m_dispatch_thread;//µ÷¶ÈÏß³Ì
-	void *m_server;//Ö¸ÏòËùÊôCTcpServer
+	void *m_dispatch_thread;//è°ƒåº¦çº¿ç¨‹
+	void *m_server;//æŒ‡å‘æ‰€å±CTcpServer
 	uint32_t m_lastTick;
 	//int m_work_thread_num;
-	void *m_rwlock;//m_sessions/m_outer_cache×¨ÓÃ±£»¤Ëø
+	void *m_rwlock;//m_sessions/m_outer_cacheä¸“ç”¨ä¿æŠ¤é”
 
-	//¶¨Ê±Æ÷Ïà¹ØµÄ
+	//å®šæ—¶å™¨ç›¸å…³çš„
 	uint32_t m_timerID;
-	CXtcSequence<STimer>m_timers;//±£´æÈÎÎñ£¬key Îª timerID
-	CXtcSequence<STimeout>m_timeout;//±£´æÈÎÎñ£¬¸ù¾İ¾ø¶ÔÊ±¼äÅÅĞò
+	CXtcSequence<STimer>m_timers;//ä¿å­˜ä»»åŠ¡ï¼Œkey ä¸º timerID
+	CXtcSequence<STimeout>m_timeout;//ä¿å­˜ä»»åŠ¡ï¼Œæ ¹æ®ç»å¯¹æ—¶é—´æ’åº
 	//CXtcArray<SPacketHeader>m_dead_links;
 
-	//Í¨¹ıÕâ¸ösocket´«µİtcpserver accpetµ½µÄsocket
-	int32_t m_server_accpet_socket;//server accpet µ½soceket ¾ÍÍùÕâ¸ösocketĞ´Êı¾İ
-	int32_t	m_group_accpet_socket;//ºÍm_server_accpet_socketÅäÌ×Ê¹ÓÃ
+	//é€šè¿‡è¿™ä¸ªsocketä¼ é€’tcpserver accpetåˆ°çš„socket
+	int32_t m_server_accpet_socket;//server accpet åˆ°soceket å°±å¾€è¿™ä¸ªsocketå†™æ•°æ®
+	int32_t	m_group_accpet_socket;//å’Œm_server_accpet_socketé…å¥—ä½¿ç”¨
 	//CXtcQueue<SPacket> m_recvbufQueue;
 	CTcpCache<SPacket> m_innerCache;
 
-	int32_t m_control_fd;//ÍùÕâ¸öfdĞ´Êı¾İ±íÃ÷ÓĞÊı¾İÒª·¢ËÍÁË
-	int32_t m_notify_fd;//ºÍm_control_fdÅäÌ×Ê¹ÓÃ
+	int32_t m_control_fd;//å¾€è¿™ä¸ªfdå†™æ•°æ®è¡¨æ˜æœ‰æ•°æ®è¦å‘é€äº†
+	int32_t m_notify_fd;//å’Œm_control_fdé…å¥—ä½¿ç”¨
 
-	void *m_inner_cache_mutex;//m_recvbufQueue Ëø
-	pthread_cond_t  *m_inner_cache_cond;//Óëm_recvbuf_queue_mutex ÅäÌ×Ê¹ÓÃ
+	void *m_inner_cache_mutex;//m_recvbufQueue é”
+	pthread_cond_t  *m_inner_cache_cond;//ä¸m_recvbuf_queue_mutex é…å¥—ä½¿ç”¨
 
-	int32_t m_model;//·ÖÅäÊ½orÇÀÕ¼Ê½
+	int32_t m_model;//åˆ†é…å¼oræŠ¢å å¼
 
 private:
-	//ÇÀÕ¼Ê½¹¤×÷´¦Àíº¯Êı 
+	//æŠ¢å å¼å·¥ä½œå¤„ç†å‡½æ•° 
 	static int32_t WorkProc( void* param, void* expend );
-	//ÇÀÕ¼Ê½¹¤×÷´¦Àíº¯Êı 
+	//æŠ¢å å¼å·¥ä½œå¤„ç†å‡½æ•° 
 	int32_t OnWork();
 
-	//·ÖÅäÊ½¹¤×÷´¦Àíº¯Êı 
+	//åˆ†é…å¼å·¥ä½œå¤„ç†å‡½æ•° 
 	static int32_t WorkProc1( void* param, void* expend );
-	//·ÖÅäÊ½¹¤×÷´¦Àíº¯Êı 
+	//åˆ†é…å¼å·¥ä½œå¤„ç†å‡½æ•° 
 	int32_t OnWork1(void* expend);
 
-	//Êı¾İ¼ì²âº¯Êı 
+	//æ•°æ®æ£€æµ‹å‡½æ•° 
 	static int32_t DispatchProc( void* param, void* expend );
-	//Êı¾İ¼ì²âº¯Êı 
+	//æ•°æ®æ£€æµ‹å‡½æ•° 
 	int32_t OnDispatch();
 
-	//¼¤»îĞÂÁ¬½Ó
+	//æ¿€æ´»æ–°è¿æ¥
 	void* ActivateLink( STcpLink link );
-	//É±ËÀĞÂÁ¬½Ó 
+	//æ€æ­»æ–°è¿æ¥ 
 	void KillLink( void *position );
-	//½«fdµÄÊı¾İ¶ÁÍê
+	//å°†fdçš„æ•°æ®è¯»å®Œ
 	void ReadSocket(int32_t fd);
 
-	//ÅÅĞò±È½Ïº¯Êı 
+	//æ’åºæ¯”è¾ƒå‡½æ•° 
 //	static int32_t CompareLinkCallback(bool item1_is_key, void* item1, void* item2, void *param );
 	static int32_t CompareSessionCallback(bool item1_is_key, void* item1, void* item2, void *param );
 
