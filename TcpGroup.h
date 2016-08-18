@@ -71,8 +71,6 @@ public:
 	void CancelTimer(uint32_t timerid);
 	//处理超时	
 	void HandleTimeout();
-
-	void GetSocket();
 	bool AddRecvBuffer(SPacket& buffer);//往抢占式队列里送,引用可以减少拷贝
 	bool AddRecvBufferToThreadQueue(SPacket& buffer);//往分配式的每个线程专属的队列里送，引用可以减少拷贝
 	//获取处理方式
