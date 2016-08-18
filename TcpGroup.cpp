@@ -343,7 +343,7 @@ void* CTcpGroup::SearchLink( uint64_t *skt_idx, CTcpSession **session )
 {
 	void *position = NULL;
 
-	position = m_sessions.Search(skt, session);
+	position = m_sessions.Search(&skt_idx, session);
 
 	return position;
 }
