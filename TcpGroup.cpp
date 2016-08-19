@@ -520,30 +520,22 @@ int32_t CTcpGroup::OnDispatch()
 					if (position)
 					{
 						session->HandleBeforeSend(packet_header,buf,size);
-						dead_flag = session->OnSend(buf, size, now);
-						if(dead_flag)
+						session->OnSend(buf, size, now);
+						if(0 < session->m_send_datsize)//没发完，下次接着发
 						{
-							osl_log_debug("[%s] skt_idx:%llu socket:%d send error close it\n",__func__,session->m_link.skt_idx,session->m_link.skt);
-							KillLink(position);
+							osl_log_debug("===send_size :%d position:%x skt:%d\n",session->m_send_datsize,position,session->m_link.skt);
+							SetEvent(session->m_link.skt,OSL_EPOLL_CTL_MOD,OSL_EPOLL_OUT,position,0);
 						}
 						else
 						{
-							if(0 < session->m_send_datsize)//没发完，下次接着发
+							//短连接,kill 0x4 表示是最后一个包，因为一个完整的包可能分多个包传输
+							if((packet_header.flag&PACKET_END )&&session->GetCloseFlag())
 							{
-								osl_log_debug("===send_size :%d position:%x skt:%d\n",session->m_send_datsize,position,session->m_link.skt);
-								SetEvent(session->m_link.skt,OSL_EPOLL_CTL_MOD,OSL_EPOLL_OUT,position,0);
-							}
-							else
-							{
-								//短连接,kill 0x4 表示是最后一个包，因为一个完整的包可能分多个包传输
-								if((packet_header.flag&PACKET_END )&&session->GetCloseFlag())
-								{
-									osl_log_debug("[%s] skt_idx:%llu socket:%d short connection later kill  it\n",__func__,session->m_link.skt_idx,session->m_link.skt);
-									CancelTimer(session->GetTimerId());
-									//KillLink(position);
-									//尽量让客户端主动关闭，若不主动关闭就延迟1秒由服务器关掉
-									session->SetTimerId(SetTimer(session->m_link.skt_idx,position,1000));//得重新设置timer
-								}
+								osl_log_debug("[%s] skt_idx:%llu socket:%d short connection later kill  it\n",__func__,session->m_link.skt_idx,session->m_link.skt);
+								CancelTimer(session->GetTimerId());
+								//KillLink(position);
+								//尽量让客户端主动关闭，若不主动关闭就延迟1秒由服务器关掉
+								session->SetTimerId(SetTimer(session->m_link.skt_idx,position,1000));//得重新设置timer
 							}
 						}
 					}
@@ -578,16 +570,9 @@ int32_t CTcpGroup::OnDispatch()
 			if( session!=NULL && session->m_link.skt != -1 && session->HandShake())
 			{
 				osl_log_debug("epoll out position:%x skt:%d\n",position,session->m_link.skt);
-				dead_flag = session->OnSend(NULL, 0, now);
-				if(dead_flag)
+				session->OnSend(NULL, 0, now);
+				if (session->m_send_datsize <= 0)//发送完成，从队列中删除SESSION
 				{
-					osl_log_debug("[%s] skt_idx:%llu socket:%d send error close it\n",__func__,session->m_link.skt_idx,session->m_link.skt);
-					KillLink(position);
-				}
-				else
-				{
-					if (session->m_send_datsize <= 0)//发送完成，从队列中删除SESSION
-					{
 						if(session->GetCloseFlag())//短连接,kill
 						{
 							osl_log_debug("short connection later will kill it\n");
@@ -597,12 +582,11 @@ int32_t CTcpGroup::OnDispatch()
 							session->SetTimerId(SetTimer(session->m_link.skt_idx,position,1000));//得重新设置timer
 						}
 						SetEvent(session->m_link.skt,OSL_EPOLL_CTL_MOD,OSL_EPOLL_IN,position,0);
-					}
-					else
-					{
-						//没发完，就接着发
-						SetEvent(session->m_link.skt,OSL_EPOLL_CTL_MOD,OSL_EPOLL_OUT,position,0);
-					}
+				}
+				else
+				{
+					//没发完，就接着发
+					SetEvent(session->m_link.skt,OSL_EPOLL_CTL_MOD,OSL_EPOLL_OUT,position,0);
 				}
 			}
 		}

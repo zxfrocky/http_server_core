@@ -34,8 +34,8 @@ public:
 	virtual void OnPacket(char_t *buf, int32_t hlen, int32_t clen,uint32_t ip,uint16_t port,SOCKET skt,uint64_t idx,uint32_t now) ;
 	//接收数据，返回true表示需socket挂了，false表示继续工作
 	virtual bool OnRecv( uint32_t now );
-	//接收数据，返回true表示需socket挂了，false表示继续工作
-	virtual bool OnSend( char_t *buf, int32_t size, uint32_t now );
+	//接收数据
+	virtual void OnSend( char_t *buf, int32_t size, uint32_t now );
 	//发送前要处理的一些回调
 	virtual void HandleBeforeSend(SPacketHeader packet_header,char_t *buf,int32_t bufsize);
 
@@ -52,8 +52,6 @@ public:
 	bool GetCloseFlag();
 	/*从socket接收数据*/
 	bool Recv(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t *recvsize);
-	/*socket发送数据*/
-	bool Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t *sndsize);
 	/*分析buffer 分析结束返回true  or 返回false*/
 	bool AnalysisBuf(char_t *buf,int32_t buflen,int32_t *pos);
 	/*ssl处理握手*/
