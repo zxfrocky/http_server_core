@@ -53,7 +53,7 @@ public:
 	/*从socket接收数据*/
 	bool Recv(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t *recvsize);
 	/*socket发送数据*/
-	bool Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t *recvsize);
+	bool Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t *sndsize);
 	/*分析buffer 分析结束返回true  or 返回false*/
 	bool AnalysisBuf(char_t *buf,int32_t buflen,int32_t *pos);
 	/*ssl处理握手*/

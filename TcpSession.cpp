@@ -15,7 +15,7 @@
 #endif
 
 
-//HTTPä¼šè¯è¿æ¥
+//HTTP»á»°Á¬½Ó
 CTcpSession::CTcpSession()
 {
 #ifdef _OPENSSL
@@ -56,7 +56,7 @@ CTcpSession::~CTcpSession()
 }
 
 
-//å¼€å§‹å·¥ä½œ
+//¿ªÊ¼¹¤×÷
 void CTcpSession::Start( void *group, STcpLink link )
 {
 	CTcpServer *svr;
@@ -78,39 +78,39 @@ void CTcpSession::Start( void *group, STcpLink link )
 //	uchar_t *p = (uchar_t*)&remote_ip;
 //	osl_log_error(">>>>client session connect:ip=%d.%d.%d.%d:%d\n",*p,*(p+1),*(p+2),*(p+3),remote_port);
 /*
-	lingæœ‰ä¸‰ç§ç»„åˆæ–¹å¼ï¼š
-	(l_onoff == 0)//l_lingerå¿½ç•¥
-		: è°ƒç”¨closesocketçš„æ—¶å€™ç«‹åˆ»è¿”å›ï¼Œåº•å±‚ä¼šå°†æœªå‘é€å®Œçš„æ•°æ®å‘é€å®Œæˆåå†é‡Šæ”¾èµ„æºï¼Œä¹Ÿå°±æ˜¯ä¼˜é›…çš„é€€å‡ºï¼Œè¿™æ˜¯ç³»ç»Ÿçš„ç¼ºçœæƒ…å†µ
+	lingÓĞÈıÖÖ×éºÏ·½Ê½£º
+	(l_onoff == 0)//l_lingerºöÂÔ
+		: µ÷ÓÃclosesocketµÄÊ±ºòÁ¢¿Ì·µ»Ø£¬µ×²ã»á½«Î´·¢ËÍÍêµÄÊı¾İ·¢ËÍÍê³ÉºóÔÙÊÍ·Å×ÊÔ´£¬Ò²¾ÍÊÇÓÅÑÅµÄÍË³ö£¬ÕâÊÇÏµÍ³µÄÈ±Ê¡Çé¿ö
 	(l_onoff != 0 && l_linger == 0)
-		: è°ƒç”¨closesocketçš„æ—¶å€™ç«‹åˆ»è¿”å›ï¼Œä½†ä¸ä¼šå‘é€æœªå‘é€å®Œæˆçš„æ•°æ®ï¼Œè€Œæ˜¯é€šè¿‡ä¸€ä¸ªRESTåŒ…å¼ºåˆ¶çš„å…³é—­socketæè¿°ç¬¦ï¼Œä¹Ÿå°±æ˜¯å¼ºåˆ¶çš„é€€å‡ºã€‚
+		: µ÷ÓÃclosesocketµÄÊ±ºòÁ¢¿Ì·µ»Ø£¬µ«²»»á·¢ËÍÎ´·¢ËÍÍê³ÉµÄÊı¾İ£¬¶øÊÇÍ¨¹ıÒ»¸öREST°üÇ¿ÖÆµÄ¹Ø±ÕsocketÃèÊö·û£¬Ò²¾ÍÊÇÇ¿ÖÆµÄÍË³ö¡£
 	[l_onoff != 0 && l_linger > 0 )
-		: è°ƒç”¨closesocketçš„æ—¶å€™ä¸ä¼šç«‹åˆ»è¿”å›ï¼Œå†…æ ¸ä¼šå»¶è¿Ÿä¸€æ®µæ—¶é—´ï¼Œè¿™ä¸ªæ—¶é—´å°±ç”±l_lingerå¾—å€¼æ¥å†³å®šã€‚
-		  å¦‚æœè¶…æ—¶æ—¶é—´åˆ°è¾¾ä¹‹å‰ï¼Œå‘é€å®Œæœªå‘é€çš„æ•°æ®(åŒ…æ‹¬FINåŒ…)å¹¶å¾—åˆ°å¦ä¸€ç«¯çš„ç¡®è®¤ï¼Œclosesocketä¼šè¿”å›æ­£ç¡®ï¼Œsocketæè¿°ç¬¦ä¼˜é›…æ€§é€€å‡ºã€‚
-		  å¦åˆ™ï¼Œclosesocketä¼šç›´æ¥è¿”å›é”™è¯¯å€¼ï¼Œæœªå‘é€æ•°æ®ä¸¢å¤±ï¼Œsocketæè¿°ç¬¦è¢«å¼ºåˆ¶æ€§é€€å‡ºã€‚
-		  éœ€è¦æ³¨æ„çš„æ—¶ï¼Œå¦‚æœsocketæè¿°ç¬¦è¢«è®¾ç½®ä¸ºéå µå¡å‹ï¼Œåˆ™closesocketä¼šç›´æ¥è¿”å›å€¼ã€‚
+		: µ÷ÓÃclosesocketµÄÊ±ºò²»»áÁ¢¿Ì·µ»Ø£¬ÄÚºË»áÑÓ³ÙÒ»¶ÎÊ±¼ä£¬Õâ¸öÊ±¼ä¾ÍÓÉl_lingerµÃÖµÀ´¾ö¶¨¡£
+		  Èç¹û³¬Ê±Ê±¼äµ½´ïÖ®Ç°£¬·¢ËÍÍêÎ´·¢ËÍµÄÊı¾İ(°üÀ¨FIN°ü)²¢µÃµ½ÁíÒ»¶ËµÄÈ·ÈÏ£¬closesocket»á·µ»ØÕıÈ·£¬socketÃèÊö·ûÓÅÑÅĞÔÍË³ö¡£
+		  ·ñÔò£¬closesocket»áÖ±½Ó·µ»Ø´íÎóÖµ£¬Î´·¢ËÍÊı¾İ¶ªÊ§£¬socketÃèÊö·û±»Ç¿ÖÆĞÔÍË³ö¡£
+		  ĞèÒª×¢ÒâµÄÊ±£¬Èç¹ûsocketÃèÊö·û±»ÉèÖÃÎª·Ç¶ÂÈûĞÍ£¬Ôòclosesocket»áÖ±½Ó·µ»ØÖµ¡£
 */
 /*	linger mode;
-	mode.l_onoff = 0;//æ˜¯å¦å»¶æ—¶é€€å‡º
-	mode.l_linger = 0;//å»¶æ—¶æ—¶é—´ï¼ˆå•ä½ç§’ï¼‰,l_onoff=0æ—¶å¿½ç•¥
+	mode.l_onoff = 0;//ÊÇ·ñÑÓÊ±ÍË³ö
+	mode.l_linger = 0;//ÑÓÊ±Ê±¼ä£¨µ¥Î»Ãë£©,l_onoff=0Ê±ºöÂÔ
 	osl_socket_set_opt( m_socket, SOL_SOCKET, SO_LINGER, (char*)&mode, sizeof(linger) );
 */
 	osl_socket_set_opt( m_link.skt, SOL_SOCKET, SO_REUSEADDR, (const char*)&flag, sizeof(flag) );
 
-	//osl_socket_ioctl( m_link.skt, FIONBIO, &unblock );//è®¾ç½®ä¸ºéå µå¡æ–¹å¼
+	//osl_socket_ioctl( m_link.skt, FIONBIO, &unblock );//ÉèÖÃÎª·Ç¶ÂÈû·½Ê½
 	size = 65536;
 	osl_socket_set_opt( m_link.skt, SOL_SOCKET, SO_SNDBUF, (char *)&size, sizeof(size) );
 	size = 65536;
 	osl_socket_set_opt( m_link.skt, SOL_SOCKET, SO_RCVBUF, (char *)&size, sizeof(size) );
-	osl_socket_ioctl( m_link.skt, FIONBIO, &unblock );//è®¾ç½®ä¸ºéå µå¡æ–¹å¼
+	osl_socket_ioctl( m_link.skt, FIONBIO, &unblock );//ÉèÖÃÎª·Ç¶ÂÈû·½Ê½
 #ifdef _OPENSSL
 	if( svr->m_ssl_flag )
 	{
 		m_handshaked = false;
 		m_ssl = SSL_new( svr->m_ssl_ctx );
-		SSL_set_fd( m_ssl, m_link.skt );/*æŠŠå»ºç«‹å¥½çš„socketå’ŒSSLç»“æ„è”ç³»èµ·æ¥*/
+		SSL_set_fd( m_ssl, m_link.skt );/*°Ñ½¨Á¢ºÃµÄsocketºÍSSL½á¹¹ÁªÏµÆğÀ´*/
 		SSL_accept( m_ssl );
 		
-		//if(SSL_accept( m_ssl ) == -1)/*æ¥å—SSLé“¾æ¥*/
+		//if(SSL_accept( m_ssl ) == -1)/*½ÓÊÜSSLÁ´½Ó*/
 		//{
 		//	osl_log_debug("=======  =======!!!!!!!!!!!!SSL_accept error\n");
 		//	int ret = SSL_get_error(m_ssl,1);
@@ -122,7 +122,7 @@ void CTcpSession::Start( void *group, STcpLink link )
 	
 }
 
-//åœæ­¢å·¥ä½œ
+//Í£Ö¹¹¤×÷
 void CTcpSession::Stop()
 {
 #ifdef _OPENSSL
@@ -152,12 +152,12 @@ void CTcpSession::Stop()
 	m_recv_datsize = 0;
 	m_send_datsize = 0;
 	
-	/* 1. close()æ˜¯ä¸€ç§ä¼˜é›…çš„å…³é—­æ–¹å¼ï¼Œå‘é€å‰©ä½™æ•°æ®ä¹‹åå…³é—­socketï¼Œä¸ä¼šäº§ç”Ÿå¤§é‡çš„TIME_WAIT
-	   2. å¦‚æœlingerè®¾ç½®äº†å»¶æ—¶ï¼Œclose()å¯èƒ½ä¼šé˜»å¡ï¼ˆhuanghuaming:ç»è¿‡éªŒè¯ï¼‰ï¼Œä»è€Œå¯¹ç¨‹åºé€»è¾‘äº§ç”Ÿå½±å“
-	   3. shutdown()æ˜¯ä¸€ç§ç²—æš´çš„å…³é—­æ–¹å¼ï¼Œä¼šæŠ›å¼ƒæœªå‘é€æ•°æ®ï¼Œç«‹å³å…³é—­ï¼Œä¼šäº§ç”Ÿå¤§é‡çš„TIME_WAIT
-	   4. å¤§é‡çš„TIME_WAITä¼šå ç”¨å¤ªå¤šsocketèµ„æºï¼Œè¶…å‡º(ulimit -n)çš„é™åˆ¶åï¼Œå®¢æˆ·ç«¯å†æ¬¡è¿æ¥ä¼šå¤±è´¥
-	   5. è¦åŒæ—¶è§£å†³TIME_WAITå’Œå»¶æ—¶çš„é—®é¢˜ï¼Œæœ€å¥½æ˜¯è®©clientå…ˆå…³é—­socketï¼Œserveréšåå…³é—­socket
-	   6. ä¿®æ”¹æ–‡ä»¶/etc/sysctl.confgçš„å¦‚ä¸‹å‚æ•°ï¼Œç„¶åæ‰§è¡Œ"/sbin/sysctl -p"èƒ½æ”¹å–„TIME_WAITçŠ¶å†µï¼š
+	/* 1. close()ÊÇÒ»ÖÖÓÅÑÅµÄ¹Ø±Õ·½Ê½£¬·¢ËÍÊ£ÓàÊı¾İÖ®ºó¹Ø±Õsocket£¬²»»á²úÉú´óÁ¿µÄTIME_WAIT
+	   2. Èç¹ûlingerÉèÖÃÁËÑÓÊ±£¬close()¿ÉÄÜ»á×èÈû£¨huanghuaming:¾­¹ıÑéÖ¤£©£¬´Ó¶ø¶Ô³ÌĞòÂß¼­²úÉúÓ°Ïì
+	   3. shutdown()ÊÇÒ»ÖÖ´Ö±©µÄ¹Ø±Õ·½Ê½£¬»áÅ×ÆúÎ´·¢ËÍÊı¾İ£¬Á¢¼´¹Ø±Õ£¬»á²úÉú´óÁ¿µÄTIME_WAIT
+	   4. ´óÁ¿µÄTIME_WAIT»áÕ¼ÓÃÌ«¶àsocket×ÊÔ´£¬³¬³ö(ulimit -n)µÄÏŞÖÆºó£¬¿Í»§¶ËÔÙ´ÎÁ¬½Ó»áÊ§°Ü
+	   5. ÒªÍ¬Ê±½â¾öTIME_WAITºÍÑÓÊ±µÄÎÊÌâ£¬×îºÃÊÇÈÃclientÏÈ¹Ø±Õsocket£¬serverËæºó¹Ø±Õsocket
+	   6. ĞŞ¸ÄÎÄ¼ş/etc/sysctl.confgµÄÈçÏÂ²ÎÊı£¬È»ºóÖ´ĞĞ"/sbin/sysctl -p"ÄÜ¸ÄÉÆTIME_WAIT×´¿ö£º
 			net.ipv4.tcp_syncookies = 1
 			net.ipv4.tcp_tw_reuse = 1
 			net.ipv4.tcp_tw_recycle = 1
@@ -168,8 +168,8 @@ void CTcpSession::Stop()
 		osl_socket_destroy( m_link.skt );
 		m_link.skt = -1;
 	}
-	//é‡Œé¢è°ƒç”¨çš„close()å®¹æ˜“äº§ç”Ÿå»¶æ—¶å’Œé˜»å¡
-	//shutdown( m_socket, SHUT_RDWR );//shutdown()ä¸é€‚ç”¨äºçŸ­è¿æ¥å®¢æˆ·ç«¯
+	//ÀïÃæµ÷ÓÃµÄclose()ÈİÒ×²úÉúÑÓÊ±ºÍ×èÈû
+	//shutdown( m_socket, SHUT_RDWR );//shutdown()²»ÊÊÓÃÓÚ¶ÌÁ¬½Ó¿Í»§¶Ë
 }
 
 bool CTcpSession::HandShake()
@@ -193,13 +193,13 @@ bool CTcpSession::HandShake()
 	return true;
 #endif
 }
-//è®¾ç½®æ­»äº¡æ ‡å¿—
+//ÉèÖÃËÀÍö±êÖ¾
 void CTcpSession::SetDead( bool flag )
 {
 	m_dead_flag = flag;
 }
 
-//æ˜¯å¦æ­»äº¡
+//ÊÇ·ñËÀÍö
 bool CTcpSession::IsDead( uint32_t now )
 {
 	bool ret = false;
@@ -215,7 +215,7 @@ bool CTcpSession::IsDead( uint32_t now )
 		ret = true;
 	}
 
-	//å¿ƒè·³å¤„ç†ï¼šå®¢æˆ·ç«¯é•¿æ—¶é—´ä¸å‘é€æ•°æ®ï¼Œè®¤ä¸ºå·²ç»æ­»äº¡
+	//ĞÄÌø´¦Àí£º¿Í»§¶Ë³¤Ê±¼ä²»·¢ËÍÊı¾İ£¬ÈÏÎªÒÑ¾­ËÀÍö
 	if( now < m_act_tick )
 		m_act_tick = now;
 	if( m_act_tick + 60000 < now )
@@ -343,7 +343,7 @@ bool CTcpSession::Recv(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t
 	return ret;
 }
 
-bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t *recvsize)
+bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t *sndsize)
 {
 	bool ret = false;
 	SSL *ssl = NULL;
@@ -360,6 +360,9 @@ bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t
 		while(1)
 		{
 			n = SSL_write( ssl, p, bufsize );
+			//errcode = SSL_get_error(ssl, n);
+			//osl_log_debug("n:%d  bufsize:%d errno:%d errcode:%d\n",n,bufsize,errno,errcode);
+			
 			if( n > 0)
 			{
 				p += n;
@@ -428,7 +431,7 @@ bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t
 					break;
 				}
 
-				//osl_log_debug("n:%d  bufsize:%d errno:%d buf:%s\n",n,bufsize,errno,buf);
+				
 			}
 			else if (n == 0)
 			{
@@ -439,7 +442,7 @@ bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t
 			{
 				if(errno == EAGAIN)
 				{
-					osl_log_debug("again %d\n %s\n",p - buf,buf);
+					osl_log_debug("again %d\n",p - buf);
 					ret = true;
 					break;
 				}
@@ -447,7 +450,7 @@ bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t
 					continue;
 				else
 				{
-					osl_log_debug("errno %d\n",errno);
+					osl_log_debug("other errno %d\n",errno);
 					ret = false;
 					break;
 				}
@@ -455,7 +458,8 @@ bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t
 		}
 	}
 
-	*recvsize = p - buf;
+	*sndsize = p - buf;
+	//osl_log_debug("ret:%d *recvsize :%d\n",ret,*recvsize);
 	return ret;
 }
 
@@ -470,14 +474,14 @@ bool CTcpSession::AnalysisBuf(char_t *buf,int32_t datsize,int32_t *pos)
 	uint32_t now;
 	int32_t leftsize = datsize;
 
-	//ç¼ºçœè®¤ä¸ºæ˜¯é•¿è¿æ¥
+	//È±Ê¡ÈÏÎªÊÇ³¤Á¬½Ó
 	m_close_flag = false;
 
 	p = p0 = buf;
 	//osl_log_debug("======= buf:%s \n",buf);
 	while( p0 + 4 < buf + datsize )
 	{
-		//æå–å¤´é•¿åº¦ å’Œ è´Ÿè½½é•¿åº¦
+		//ÌáÈ¡Í·³¤¶È ºÍ ¸ºÔØ³¤¶È
 		p = osl_strstr( p0, "\r\n\r\n" );
 		if( p == NULL )
 		{
@@ -497,18 +501,18 @@ bool CTcpSession::AnalysisBuf(char_t *buf,int32_t datsize,int32_t *pos)
 		//osl_log_debug("[CTcpSession][OnRecv]  hlen=%d clen=%d datsize=%d\n", hlen, clen, datsize);
 
 		
-		/* å¤„ç†ä¸€ä¸ªå®Œæ•´çš„æ•°æ®åŒ… */
+		/* ´¦ÀíÒ»¸öÍêÕûµÄÊı¾İ°ü */
 		//if ( 0 < hlen && hlen + clen <= datsize )
 		if ( 0 < hlen && hlen + clen <= leftsize )
 		{
 		#if 0
-			//åˆ†å‘å¤„ç†
+			//·Ö·¢´¦Àí
 			OnPacket( p0, hlen, clen, now);
 			memset( &sta, 0, sizeof(sta) );
 			sta.cmd_cnt = 1;
 			svr->AddStatistics( sta );
 
-			//å¦‚æœæ˜¯çŸ­è¿æ¥ï¼Œé€šçŸ¥å¤–éƒ¨å…³é—­socket
+			//Èç¹ûÊÇ¶ÌÁ¬½Ó£¬Í¨ÖªÍâ²¿¹Ø±Õsocket
 			memset( str, 0, sizeof(str) );
 			if( osl_url_getheadval( p0 , -1, "Connection", str, sizeof(str) ) )
 			{
@@ -517,7 +521,7 @@ bool CTcpSession::AnalysisBuf(char_t *buf,int32_t datsize,int32_t *pos)
 			}
 		#endif
 			m_act_tick = now;
-			//åˆ†å‘å¤„ç†
+			//·Ö·¢´¦Àí
 			now = osl_get_ms();
 			OnPacket( p0, hlen, clen,m_link.remote_ip,m_link.remote_port ,m_link.skt,m_link.skt_idx,now);
 			//memset( &sta, 0, sizeof(sta) );
@@ -525,7 +529,7 @@ bool CTcpSession::AnalysisBuf(char_t *buf,int32_t datsize,int32_t *pos)
 			//svr->AddStatistics( sta );
 			
 			//osl_log_debug("xxxxxxxx skt:%d ip:%d\n",m_link.skt,m_link.remote_ip);
-			//å¦‚æœæ˜¯çŸ­è¿æ¥ï¼Œé€šçŸ¥å¤–éƒ¨å…³é—­socket
+			//Èç¹ûÊÇ¶ÌÁ¬½Ó£¬Í¨ÖªÍâ²¿¹Ø±Õsocket
 			memset( str, 0, sizeof(str) );
 			if( osl_url_getheadval( p0 , -1, "Connection", str, sizeof(str) ) )
 			{
@@ -535,7 +539,7 @@ bool CTcpSession::AnalysisBuf(char_t *buf,int32_t datsize,int32_t *pos)
 			p0 += hlen + clen;
 			leftsize  = leftsize - hlen - clen;
 		}
-		else //åŒ…ä¸å®Œæ•´
+		else //°ü²»ÍêÕû
 		{
 			//if ( datsize >= m_recv_bufsize  )
 			//{
@@ -562,7 +566,7 @@ bool CTcpSession::AnalysisBuf(char_t *buf,int32_t datsize,int32_t *pos)
 	return ret;
 }
 
-//æ¥æ”¶æ•°æ®ï¼Œè¿”å›trueè¡¨ç¤ºéœ€socketæŒ‚äº†ï¼Œfalseè¡¨ç¤ºç»§ç»­å·¥ä½œ
+//½ÓÊÕÊı¾İ£¬·µ»Øtrue±íÊ¾Ğèsocket¹ÒÁË£¬false±íÊ¾¼ÌĞø¹¤×÷
 bool CTcpSession::OnRecv( uint32_t now )
 {
 	CTcpServer *svr = (CTcpServer*)GetServer();
@@ -579,8 +583,8 @@ bool CTcpSession::OnRecv( uint32_t now )
 	bool is_complete = false;
 	bool recv_flag = false;
 	
-	if(m_recv_datsize > 0)//ä¸Šæ¬¡æœ‰æ•°æ®
-		recv_size = m_recv_bufsize - m_recv_datsize -1;//æœ€å¤šèƒ½æ”¶è¿™ä¹ˆå¤šæ•°æ®
+	if(m_recv_datsize > 0)//ÉÏ´ÎÓĞÊı¾İ
+		recv_size = m_recv_bufsize - m_recv_datsize -1;//×î¶àÄÜÊÕÕâÃ´¶àÊı¾İ
 	else
 		recv_size = bufsize-1;
 	//osl_log_debug("====== read_size:%d %d\n",recv_size,grp->m_recv_bufsize);
@@ -596,7 +600,7 @@ bool CTcpSession::OnRecv( uint32_t now )
 	{
 		recv_flag = Recv(m_ssl,buf,recv_size,true,&read_size);
 	}
-	else// ä¸æ˜¯sssl
+	else// ²»ÊÇsssl
 	{
 		recv_flag = Recv(&m_link.skt,buf,recv_size,false,&read_size);
 	}
@@ -615,7 +619,7 @@ bool CTcpSession::OnRecv( uint32_t now )
 	sta.cmd_cnt = 1;
 	svr->AddStatistics( sta );
 				
-	if(m_recv_datsize > 0)//ä¸Šæ¬¡æœ‰æ•°æ®ï¼Œè¦åˆå¹¶å¤„ç†
+	if(m_recv_datsize > 0)//ÉÏ´ÎÓĞÊı¾İ£¬ÒªºÏ²¢´¦Àí
 	{
 		if(read_size > 0)
 		{
@@ -636,7 +640,7 @@ bool CTcpSession::OnRecv( uint32_t now )
 				m_recv_datsize = 0;
 			}
 		}
-		else if(!is_complete && pos > 0)//è¿˜æœ‰æ•°æ®æ²¡å¤„ç†å®Œ
+		else if(!is_complete && pos > 0)//»¹ÓĞÊı¾İÃ»´¦ÀíÍê
 		{
 			memmove(m_recv_buf,m_recv_buf + pos ,m_recv_datsize - pos);
 			m_recv_datsize = m_recv_datsize - pos;
@@ -654,14 +658,14 @@ bool CTcpSession::OnRecv( uint32_t now )
 
 		//osl_log_debug("========4  m_recv_datsize:%d complete buf\n",m_recv_datsize);
 	}
-	else//ä¸Šæ¬¡æ²¡æ•°æ®
+	else//ÉÏ´ÎÃ»Êı¾İ
 	{
 		//osl_log_debug("========4.5 read_size:%d is_complete:%d\n",read_size,is_complete);
 		buf[read_size] = 0;
 		//osl_log_debug("== buf:%s\n",buf);
 		is_complete = AnalysisBuf(buf,read_size,&pos);
 
-		if(false == is_complete && pos >= 0)//ä¸æ˜¯å®Œæ•´çš„httpåŒ…
+		if(false == is_complete && pos >= 0)//²»ÊÇÍêÕûµÄhttp°ü
 		{
 
 			if(NULL == m_recv_buf)
@@ -696,7 +700,7 @@ bool CTcpSession::OnRecv( uint32_t now )
 
 	if (m_recv_buf)
 	{
-		//ä¸Šæ¬¡æ•°æ®ä¸æœ¬æ¬¡æ–°æ¥æ”¶æ•°æ®åˆå¹¶
+		//ÉÏ´ÎÊı¾İÓë±¾´ÎĞÂ½ÓÊÕÊı¾İºÏ²¢
 		buf = m_recv_buf + m_recv_datsize;
 		bufsize = m_recv_bufsize - m_recv_datsize;
 		datsize = m_recv_datsize;
@@ -735,8 +739,8 @@ bool CTcpSession::OnRecv( uint32_t now )
 	}
 	else if (size < 0)
 	{
-		if(errno == ECONNRESET || errno == ETIMEDOUT)//å¯¹æ–¹å…³é—­ || è¿æ¥è¶…æ—¶
-		//if(errno == ETIMEDOUT)//å¯¹æ–¹å…³é—­ || è¿æ¥è¶…æ—¶
+		if(errno == ECONNRESET || errno == ETIMEDOUT)//¶Ô·½¹Ø±Õ || Á¬½Ó³¬Ê±
+		//if(errno == ETIMEDOUT)//¶Ô·½¹Ø±Õ || Á¬½Ó³¬Ê±
 		{
 			osl_log_debug( "[CTcpSession][OnRecv] socket error %d %d %d\n", errno, ECONNRESET, ETIMEDOUT );
 			m_dead_flag = true;	
@@ -761,13 +765,13 @@ bool CTcpSession::OnRecv( uint32_t now )
 		buf[size]=0;
 		ret = false;
 
-		//ç¼ºçœè®¤ä¸ºæ˜¯é•¿è¿æ¥
+		//È±Ê¡ÈÏÎªÊÇ³¤Á¬½Ó
 		m_close_flag = false;
 
 		p = p0 = m_recv_buf;
 		while( p0 + 4 < m_recv_buf + datsize )
 		{
-			//æå–å¤´é•¿åº¦ å’Œ è´Ÿè½½é•¿åº¦
+			//ÌáÈ¡Í·³¤¶È ºÍ ¸ºÔØ³¤¶È
 			p = osl_strstr( (const char*)p0, "\r\n\r\n" );
 			if( p == NULL )
 			{
@@ -787,17 +791,17 @@ bool CTcpSession::OnRecv( uint32_t now )
 
 			
 			
-			/* å¤„ç†ä¸€ä¸ªå®Œæ•´çš„æ•°æ®åŒ… */
+			/* ´¦ÀíÒ»¸öÍêÕûµÄÊı¾İ°ü */
 			if ( 0 < hlen && hlen + clen <= datsize )
 			{
 			#if 0
-				//åˆ†å‘å¤„ç†
+				//·Ö·¢´¦Àí
 				OnPacket( p0, hlen, clen, now);
 				memset( &sta, 0, sizeof(sta) );
 				sta.cmd_cnt = 1;
 				svr->AddStatistics( sta );
 
-				//å¦‚æœæ˜¯çŸ­è¿æ¥ï¼Œé€šçŸ¥å¤–éƒ¨å…³é—­socket
+				//Èç¹ûÊÇ¶ÌÁ¬½Ó£¬Í¨ÖªÍâ²¿¹Ø±Õsocket
 				memset( str, 0, sizeof(str) );
 				if( osl_url_getheadval( p0 , -1, "Connection", str, sizeof(str) ) )
 				{
@@ -806,14 +810,14 @@ bool CTcpSession::OnRecv( uint32_t now )
 				}
 			#endif
 
-							//åˆ†å‘å¤„ç†
+							//·Ö·¢´¦Àí
 				OnPacket( p0, hlen, clen,m_link.remote_ip,m_link.remote_port ,m_link.skt,now);
 				memset( &sta, 0, sizeof(sta) );
 				sta.cmd_cnt = 1;
 				svr->AddStatistics( sta );
 				
 				//osl_log_debug("xxxxxxxx skt:%d ip:%d\n",m_link.skt,m_link.remote_ip);
-				//å¦‚æœæ˜¯çŸ­è¿æ¥ï¼Œé€šçŸ¥å¤–éƒ¨å…³é—­socket
+				//Èç¹ûÊÇ¶ÌÁ¬½Ó£¬Í¨ÖªÍâ²¿¹Ø±Õsocket
 				memset( str, 0, sizeof(str) );
 				if( osl_url_getheadval( p0 , -1, "Connection", str, sizeof(str) ) )
 				{
@@ -822,7 +826,7 @@ bool CTcpSession::OnRecv( uint32_t now )
 				}
 				p0 += hlen + clen;
 			}
-			else //åŒ…ä¸å®Œæ•´
+			else //°ü²»ÍêÕû
 			{
 				if ( datsize >= m_recv_bufsize  )
 				{
@@ -836,7 +840,7 @@ bool CTcpSession::OnRecv( uint32_t now )
 
 		m_act_tick = now;
 
-		//åˆ é™¤å·²ç»å¤„ç†è¿‡çš„æ•°æ®åŒ…ï¼Œå°†å‰©ä½™æ•°æ®ç¼“å­˜åœ¨linkä¸­ï¼Œç­‰å¾…ä¸‹æ¬¡ç»§ç»­æ¥æ”¶
+		//É¾³ıÒÑ¾­´¦Àí¹ıµÄÊı¾İ°ü£¬½«Ê£ÓàÊı¾İ»º´æÔÚlinkÖĞ£¬µÈ´ıÏÂ´Î¼ÌĞø½ÓÊÕ
 		if ( m_recv_buf != p0 )
 		{
 			datsize = (int32_t)(m_recv_buf+datsize-p0);
@@ -864,7 +868,7 @@ ERROR_PACKET:
 #endif
 }
 
-//æ¥æ”¶æ•°æ®ï¼Œè¿”å›trueè¡¨ç¤ºéœ€socketæŒ‚äº†ï¼Œfalseè¡¨ç¤ºç»§ç»­å·¥ä½œ
+//½ÓÊÕÊı¾İ£¬·µ»Øtrue±íÊ¾Ğèsocket¹ÒÁË£¬false±íÊ¾¼ÌĞø¹¤×÷
 bool CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
 {
 	CTcpServer *svr = (CTcpServer*)GetServer();
@@ -874,9 +878,10 @@ bool CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
 
 	//osl_log_debug("size :%d\n",size);
 
-	//å…ˆå‘é€ä¸Šæ¬¡å‰©ä½™æ•°æ®
+	//ÏÈ·¢ËÍÉÏ´ÎÊ£ÓàÊı¾İ
 	if (m_send_buf && 0 < m_send_datsize)
 	{
+		//osl_log_debug("last m_send_buf:%x m_send_datsize:%d size:%d m_send_bufsize:%d\n",m_send_buf,m_send_datsize,size,m_send_bufsize);
 	#ifdef _OPENSSL
 		if( m_ssl )
 		{
@@ -911,9 +916,18 @@ bool CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
 		}
 	}
 
-	//å‘é€æœ¬æ¬¡æ•°æ®
-	if (m_send_buf == NULL || m_send_datsize <= 0)
+	//osl_log_debug("m_send_buf:%x m_send_datsize:%d size:%d m_send_bufsize:%d\n",m_send_buf,m_send_datsize,size,m_send_bufsize);
+	//·¢ËÍ±¾´ÎÊı¾İ
+	if ((m_send_buf == NULL || m_send_datsize <= 0 ))
 	{
+		if(size <= 0 )
+		{
+			free(m_send_buf);
+			m_send_buf = NULL;
+			m_send_bufsize = 0;
+			return false;
+		}
+		
 		sndsize = 0;
 	#ifdef _OPENSSL
 		if( m_ssl )
@@ -933,10 +947,10 @@ bool CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
 
 		if(!flag)
 			return true;
-		if( 0 < sndsize )//å°†å‰©ä½™æ•°æ®å­˜å…¥m_send_buf
+		if( 0 <= sndsize )//½«Ê£ÓàÊı¾İ´æÈëm_send_buf
 		{
 			m_send_datsize = size - sndsize;
-			//osl_log_debug("m_send_datsize:%d m_send_bufsize:%d m_send_buf:%x\n",m_send_datsize,m_send_bufsize,m_send_buf);
+			//osl_log_debug("xx m_send_datsize:%d m_send_bufsize:%d m_send_buf:%x\n",m_send_datsize,m_send_bufsize,m_send_buf);
 			if( 0 < m_send_datsize )
 			{
 				if (m_send_buf && m_send_bufsize < m_send_datsize)
@@ -969,12 +983,15 @@ bool CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
 			m_act_tick = now;
 		}
 	}
-	//å°†æœ¬æ¬¡æ•°æ®æ¥å…¥ä¸Šæ¬¡å‰©ä½™æ•°æ®å°¾å·´
+	//½«±¾´ÎÊı¾İ½ÓÈëÉÏ´ÎÊ£ÓàÊı¾İÎ²°Í
 	else if (m_send_buf && m_send_datsize + size < m_send_bufsize )
 	{
 		//osl_log_warn("xxxxx\n");
-		memcpy( m_send_buf + m_send_datsize, buf, size );
-		m_send_datsize += size;
+		if(size > 0)
+		{
+			memcpy( m_send_buf + m_send_datsize, buf, size );
+			m_send_datsize += size;
+		}
 	}
 	else
 	{
@@ -984,7 +1001,7 @@ bool CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
 	return false;
 }
 
-//å‘é€å¤–éƒ¨æ•°æ®(ä¸èƒ½å¤šçº¿ç¨‹åŒæ—¶æ‰§è¡Œï¼‰
+//·¢ËÍÍâ²¿Êı¾İ(²»ÄÜ¶àÏß³ÌÍ¬Ê±Ö´ĞĞ£©
 bool CTcpSession::PostData( char_t *buf, int32_t size )
 {
 	SPacketHeader header;
@@ -997,14 +1014,14 @@ bool CTcpSession::PostData( char_t *buf, int32_t size )
 }
 
 
-//æ•°æ®åŒ…å¤„ç†å‡½æ•°
+//Êı¾İ°ü´¦Àíº¯Êı
 void CTcpSession::OnPacket(char_t *buf, int32_t hlen, int32_t clen,uint32_t ip,uint16_t port,SOCKET skt,uint64_t,uint32_t now)
 {
 	osl_log_debug("func:%s  line:%d it is unhappend posible\n",__func__,__LINE__);
 }
 
 
-//å‘é€å‰è¦å¤„ç†çš„ä¸€äº›å›è°ƒ
+//·¢ËÍÇ°Òª´¦ÀíµÄÒ»Ğ©»Øµ÷
 void CTcpSession::HandleBeforeSend(SPacketHeader packet_header,char_t *buf,int32_t bufsize)
 {	
 
@@ -1031,7 +1048,7 @@ uint32_t CTcpSession::GetTimerId()
 	return m_timer_id; 
 }
 
-//å–å¾—m_close_flag
+//È¡µÃm_close_flag
 bool CTcpSession::GetCloseFlag()
 {
 	return m_close_flag;

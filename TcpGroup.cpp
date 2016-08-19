@@ -15,7 +15,7 @@
 #include "main.h"
 
 
-//TCPä¼šè¯ç»„
+//TCP»á»°×é
 CTcpGroup::CTcpGroup()
 {
 	m_epoll = NULL;
@@ -26,11 +26,11 @@ CTcpGroup::CTcpGroup()
 	m_rwlock = NULL;
 	m_inner_cache_mutex = NULL;
 	m_inner_cache_cond = NULL;
-	//é€šè¿‡è¿™ä¸ªsocketä¼ é€’tcpserver accpetåˆ°çš„socket
-	m_server_accpet_socket = -1;//server accpet åˆ°soceket å°±å¾€è¿™ä¸ªsocketå†™æ•°æ®
-	m_group_accpet_socket = -1;//å’Œm_server_accpet_socketé…å¥—ä½¿ç”¨
-	m_control_fd = -1;//å¾€è¿™ä¸ªfdå†™æ•°æ®è¡¨æ˜æœ‰æ•°æ®è¦å‘é€äº†
-	m_notify_fd = -1;//å’Œm_control_fdé…å¥—ä½¿ç”¨
+	//Í¨¹ıÕâ¸ösocket´«µİtcpserver accpetµ½µÄsocket
+	m_server_accpet_socket = -1;//server accpet µ½soceket ¾ÍÍùÕâ¸ösocketĞ´Êı¾İ
+	m_group_accpet_socket = -1;//ºÍm_server_accpet_socketÅäÌ×Ê¹ÓÃ
+	m_control_fd = -1;//ÍùÕâ¸öfdĞ´Êı¾İ±íÃ÷ÓĞÊı¾İÒª·¢ËÍÁË
+	m_notify_fd = -1;//ºÍm_control_fdÅäÌ×Ê¹ÓÃ
 	//m_recv_buf = NULL;
 
 	m_sessions.SetCompareCallback( CTcpGroup::CompareSessionCallback, this );
@@ -38,7 +38,7 @@ CTcpGroup::CTcpGroup()
 	//m_sendLinks.SetCompareCallback( CTcpGroup::CompareLinkCallback, this );
 
 
-	//è¶…æ—¶æ£€æµ‹ç›¸å…³
+	//³¬Ê±¼ì²âÏà¹Ø
 	m_timerID = 0;
 	m_timers.SetCompareCallback(CTcpGroup::CompareTaskByTimerIDCallback,this);
 	m_timeout.SetCompareCallback(CTcpGroup::CompareTaskByTimeMsCallback,this);
@@ -52,7 +52,7 @@ CTcpGroup::~CTcpGroup()
 }
 
 
-//å¯åŠ¨æœåŠ¡
+//Æô¶¯·şÎñ
 bool CTcpGroup::Start( void *server, int32_t cpu_idx,int32_t thread_num ,int32_t cpu_num,int32_t model,bool need_response)
 {
 	SThreadArg *thread_arg;
@@ -61,7 +61,7 @@ bool CTcpGroup::Start( void *server, int32_t cpu_idx,int32_t thread_num ,int32_t
 	int fd[2];
 	
 	m_newQueue.Create(8196);
-	m_outerCache.Create( g_settings.group_cache_size*1024*1024 );//å¤–éƒ¨æ•°æ®å‘é€ç¼“å†²åŒº
+	m_outerCache.Create( g_settings.group_cache_size*1024*1024 );//Íâ²¿Êı¾İ·¢ËÍ»º³åÇø
 
 	m_epoll = osl_epoll_create( 65536 );
 	m_server= server;
@@ -103,18 +103,18 @@ bool CTcpGroup::Start( void *server, int32_t cpu_idx,int32_t thread_num ,int32_t
 	work_thread_num = thread_num < MAX_WORK_THERAD_NUM ? thread_num : MAX_WORK_THERAD_NUM;
 	if(model != 1 && model != 2)
 	{
-		model = 1;//é»˜è®¤å°±æ˜¯æŠ¢å å¼
+		model = 1;//Ä¬ÈÏ¾ÍÊÇÇÀÕ¼Ê½
 	}
-	/*å¦‚æœwork_thread_num ä¸å¤§äº0 ï¼Œè¡¨æ˜æ‰€æœ‰çš„ä»»åŠ¡éƒ½åœ¨Dispatch çº¿ç¨‹å¤„ç†*/
+	/*Èç¹ûwork_thread_num ²»´óÓÚ0 £¬±íÃ÷ËùÓĞµÄÈÎÎñ¶¼ÔÚDispatch Ïß³Ì´¦Àí*/
 	m_model = model;
 	if(model == 1)
 	{
-		//æŠ¢å å¼
+		//ÇÀÕ¼Ê½
 		if(work_thread_num > 0)
 		{
 			m_innerCache.Create(g_settings.group_cache_size*1024*1024);//
-			m_inner_cache_mutex = osl_mutex_create();//m_recvbufQueue é”
-			m_inner_cache_cond = (pthread_cond_t*)malloc(sizeof(pthread_cond_t));//ä¸m_recvbuf_queue_mutex é…å¥—ä½¿ç”¨
+			m_inner_cache_mutex = osl_mutex_create();//m_recvbufQueue Ëø
+			m_inner_cache_cond = (pthread_cond_t*)malloc(sizeof(pthread_cond_t));//Óëm_recvbuf_queue_mutex ÅäÌ×Ê¹ÓÃ
 			pthread_cond_init( m_inner_cache_cond, NULL );
 
 			for(int i = 0;i< work_thread_num ;i++)
@@ -135,7 +135,7 @@ bool CTcpGroup::Start( void *server, int32_t cpu_idx,int32_t thread_num ,int32_t
 	}
 	else if(model == 2)
 	{
-		//åˆ†é…å¼
+		//·ÖÅäÊ½
 		if(work_thread_num > 0)
 		{
 			for(int i = 0;i< work_thread_num ;i++)
@@ -173,7 +173,7 @@ bool CTcpGroup::Start( void *server, int32_t cpu_idx,int32_t thread_num ,int32_t
 	return true;
 }
 
-//åœæ­¢
+//Í£Ö¹
 void CTcpGroup::Stop()
 {
 	STcpLink link;
@@ -290,7 +290,7 @@ void CTcpGroup::Stop()
 }
 
 
-//æ˜¯å¦å·²ç»åˆå§‹åŒ–
+//ÊÇ·ñÒÑ¾­³õÊ¼»¯
 bool CTcpGroup::IsStarted()
 {
 	return m_epoll != NULL;
@@ -301,7 +301,7 @@ void* CTcpGroup::GetServer()
 	return m_server;
 }
 
-//æ·»åŠ æ–°è¿æ¥
+//Ìí¼ÓĞÂÁ¬½Ó
 void CTcpGroup::SetLinkBorn( STcpLink link )
 {
 	osl_log_debug("func :%s post skt:%d \n",__func__,link.skt);
@@ -318,7 +318,7 @@ void CTcpGroup::SetLinkBorn( STcpLink link )
 	}
 }
 
-//è¦æ±‚linkæ­»äº¡
+//ÒªÇólinkËÀÍö
 bool CTcpGroup::SetLinkDead( STcpLink link )
 {
 	bool ret = false;
@@ -338,7 +338,7 @@ bool CTcpGroup::SetLinkDead( STcpLink link )
 	return ret;
 }
 
-//å¯»æ‰¾session
+//Ñ°ÕÒsession
 void* CTcpGroup::SearchLink( uint64_t skt_idx, CTcpSession **session )
 {
 	void *position = NULL;
@@ -348,7 +348,7 @@ void* CTcpGroup::SearchLink( uint64_t skt_idx, CTcpSession **session )
 	return position;
 }
 
-//å‘é€æ•°æ®ï¼Œé€å…¥ç¼“å†²ç«‹å³è¿”å›ï¼Œå·²åŠ é”çº¿ç¨‹å®‰å…¨
+//·¢ËÍÊı¾İ£¬ËÍÈë»º³åÁ¢¼´·µ»Ø£¬ÒÑ¼ÓËøÏß³Ì°²È«
 bool CTcpGroup::PostData( SPacketHeader& packet_header, char_t *buf, int32_t size )
 {
 	//printf("PostData:%s\n",buf);
@@ -356,7 +356,7 @@ bool CTcpGroup::PostData( SPacketHeader& packet_header, char_t *buf, int32_t siz
 
 	if(size > 65536)
 	{
-		//è¶…è¿‡65536 è¯·åˆ†åŒ…ä¼ è¾“,æ³¨æ„è®¾ç½®å¥½PACKET_START å’Œ PACKET_END
+		//³¬¹ı65536 Çë·Ö°ü´«Êä,×¢ÒâÉèÖÃºÃPACKET_START ºÍ PACKET_END
 		osl_log_debug("[%s] size:%d too much,please Packet transmission\n",__func__,size);
 		return false;
 	}
@@ -379,12 +379,12 @@ bool CTcpGroup::PostData( SPacketHeader& packet_header, char_t *buf, int32_t siz
 	return ret;
 }
 
-//è®¾ç½®äº‹ä»¶
+//ÉèÖÃÊÂ¼ş
 void CTcpGroup::SetEvent(int32_t fd,int ctrl,int event,void *ptr_param,int fd_param)
 {
 	SEpollEvent ev;
 	memset(&ev, 0, sizeof(ev));
-	ev.events = event ;//LT å’Œ ET éƒ½å¯ä»¥ï¼ŒLTæ›´ä¿é™©ä¸€äº›ï¼Œå› ä¸ºç³»ç»Ÿçš„ç“¶é¢ˆä¸åœ¨è¿™é‡Œ
+	ev.events = event ;//LT ºÍ ET ¶¼¿ÉÒÔ£¬LT¸ü±£ÏÕÒ»Ğ©£¬ÒòÎªÏµÍ³µÄÆ¿¾±²»ÔÚÕâÀï
 	if(ptr_param)
 		ev.data.ptr = ptr_param;
 	else if(fd_param > 0)
@@ -410,7 +410,7 @@ bool CTcpGroup::AddRecvBuffer(SPacket& packet)
 	return ret;
 }
 
-bool CTcpGroup::AddRecvBufferToThreadQueue(SPacket& packet)//å¾€åˆ†é…å¼çš„æ¯ä¸ªçº¿ç¨‹ä¸“å±çš„é˜Ÿåˆ—é‡Œé€
+bool CTcpGroup::AddRecvBufferToThreadQueue(SPacket& packet)//Íù·ÖÅäÊ½µÄÃ¿¸öÏß³Ì×¨ÊôµÄ¶ÓÁĞÀïËÍ
 {
 	bool ret = false;
 	int32_t idx = packet.header.link.skt_idx % m_work_thread.GetSize();
@@ -459,23 +459,23 @@ int32_t CTcpGroup::OnDispatch()
 	if(m_lastTick == 0)
 		m_lastTick = now;
 
-	//è·å¾—wait_ms çš„æ—¶é—´
+	//»ñµÃwait_ms µÄÊ±¼ä
 	position = m_timeout.GetFirst(&timeout);
 	if(position)
 		wait_ms = (int32_t)((int64_t)timeout.currentMS - (int64_t)now);
 
-	//wait_ms ä¸å¯èƒ½å¤§äº60ç§’ï¼Œä¸å¯èƒ½å°äº0(-1ä¾‹å¤–)
+	//wait_ms ²»¿ÉÄÜ´óÓÚ60Ãë£¬²»¿ÉÄÜĞ¡ÓÚ0(-1ÀıÍâ)
 	if(wait_ms > 60000)
 		wait_ms = 60000;
 
-	if(now < m_lastTick || (wait_ms != -1 && wait_ms < 0))//æ—¶é—´å›æº¯
+	if(now < m_lastTick || (wait_ms != -1 && wait_ms < 0))//Ê±¼ä»ØËİ
 		wait_ms = 0;
 	num = osl_epoll_wait( m_epoll, events, sizeof(events)/sizeof(events[0]), wait_ms );
 	for( int i=0; i<num; i++ )
 	{
 		pv = events + i;
 
-		if (pv->events & (OSL_EPOLL_HUP | OSL_EPOLL_ERR))//å‡ºé”™äº†ï¼Œå¿…é¡»å¾—åˆ æ‰
+		if (pv->events & (OSL_EPOLL_HUP | OSL_EPOLL_ERR))//³ö´íÁË£¬±ØĞëµÃÉ¾µô
 		{
 			if(pv->data.fd != m_group_accpet_socket && pv->data.fd != m_notify_fd)
 			{
@@ -483,7 +483,7 @@ int32_t CTcpGroup::OnDispatch()
 				session = *m_sessions.GetValue( position ); 
 				if( session!=NULL && session->m_link.skt != -1 )
 				{
-					//æœ‰æ•°æ®æ¥æ”¶äº†ï¼Œä¸Šä¸€æ¬¡çš„timerå¾—åˆ æ‰
+					//ÓĞÊı¾İ½ÓÊÕÁË£¬ÉÏÒ»´ÎµÄtimerµÃÉ¾µô
 					osl_log_debug("[%s] EPOLL_ERR or EPOLL_HUP\n",__func__);
 					CancelTimer(session->GetTimerId());
 					KillLink(position);
@@ -491,13 +491,13 @@ int32_t CTcpGroup::OnDispatch()
 			}
 			
 		}
-		else if( pv->events & OSL_EPOLL_IN)//æœ‰æ•°æ®è¦æ¥æ”¶
+		else if( pv->events & OSL_EPOLL_IN)//ÓĞÊı¾İÒª½ÓÊÕ
 		{
-			if(m_group_accpet_socket == pv->data.fd)//æ–°çš„socket
+			if(m_group_accpet_socket == pv->data.fd)//ĞÂµÄsocket
 			{
 				ReadSocket(m_group_accpet_socket);
 
-				//æ¿€æ´»æ–°è¿æ¥
+				//¼¤»îĞÂÁ¬½Ó
 				while(m_newQueue.Read(&link))
 				{
 					position = ActivateLink( link );
@@ -508,7 +508,7 @@ int32_t CTcpGroup::OnDispatch()
 					}
 				}
 			}
-			else if (m_notify_fd == pv->data.fd)//å‘é€é˜Ÿåˆ—æœ‰æ•°æ®è¦å‘é€
+			else if (m_notify_fd == pv->data.fd)//·¢ËÍ¶ÓÁĞÓĞÊı¾İÒª·¢ËÍ
 			{
 				ReadSocket(m_notify_fd);		
 				while(true)
@@ -528,21 +528,21 @@ int32_t CTcpGroup::OnDispatch()
 						}
 						else
 						{
-							if(0 < session->m_send_datsize)//æ²¡å‘å®Œï¼Œä¸‹æ¬¡æ¥ç€å‘
+							if(0 < session->m_send_datsize)//Ã»·¢Íê£¬ÏÂ´Î½Ó×Å·¢
 							{
 								osl_log_debug("===send_size :%d position:%x skt:%d\n",session->m_send_datsize,position,session->m_link.skt);
 								SetEvent(session->m_link.skt,OSL_EPOLL_CTL_MOD,OSL_EPOLL_OUT,position,0);
 							}
 							else
 							{
-								//çŸ­è¿æ¥,kill 0x4 è¡¨ç¤ºæ˜¯æœ€åä¸€ä¸ªåŒ…ï¼Œå› ä¸ºä¸€ä¸ªå®Œæ•´çš„åŒ…å¯èƒ½åˆ†å¤šä¸ªåŒ…ä¼ è¾“
+								//¶ÌÁ¬½Ó,kill 0x4 ±íÊ¾ÊÇ×îºóÒ»¸ö°ü£¬ÒòÎªÒ»¸öÍêÕûµÄ°ü¿ÉÄÜ·Ö¶à¸ö°ü´«Êä
 								if((packet_header.flag&PACKET_END )&&session->GetCloseFlag())
 								{
 									osl_log_debug("[%s] skt_idx:%llu socket:%d short connection later kill  it\n",__func__,session->m_link.skt_idx,session->m_link.skt);
 									CancelTimer(session->GetTimerId());
 									//KillLink(position);
-									//å°½é‡è®©å®¢æˆ·ç«¯ä¸»åŠ¨å…³é—­ï¼Œè‹¥ä¸ä¸»åŠ¨å…³é—­å°±å»¶è¿Ÿ1ç§’ç”±æœåŠ¡å™¨å…³æ‰
-									session->SetTimerId(SetTimer(session->m_link.skt_idx,position,1000));//å¾—é‡æ–°è®¾ç½®timer
+									//¾¡Á¿ÈÃ¿Í»§¶ËÖ÷¶¯¹Ø±Õ£¬Èô²»Ö÷¶¯¹Ø±Õ¾ÍÑÓ³Ù1ÃëÓÉ·şÎñÆ÷¹Øµô
+									session->SetTimerId(SetTimer(session->m_link.skt_idx,position,1000));//µÃÖØĞÂÉèÖÃtimer
 								}
 							}
 						}
@@ -555,7 +555,7 @@ int32_t CTcpGroup::OnDispatch()
 				session = *m_sessions.GetValue( position );
 				if( session!=NULL && session->m_link.skt != -1 && session->HandShake())
 				{
-					//æœ‰æ•°æ®æ¥æ”¶äº†ï¼Œä¸Šä¸€æ¬¡çš„timerå¾—åˆ æ‰
+					//ÓĞÊı¾İ½ÓÊÕÁË£¬ÉÏÒ»´ÎµÄtimerµÃÉ¾µô
 					CancelTimer(session->GetTimerId());
 					dead_flag = session->OnRecv(now);
 					if(dead_flag)
@@ -565,13 +565,13 @@ int32_t CTcpGroup::OnDispatch()
 					}
 					else
 					{
-						//é‡æ–°è®¾ç½®è¶…æ—¶
-						session->SetTimerId(SetTimer(session->m_link.skt_idx,position));//å¾—é‡æ–°è®¾ç½®timer
+						//ÖØĞÂÉèÖÃ³¬Ê±
+						session->SetTimerId(SetTimer(session->m_link.skt_idx,position));//µÃÖØĞÂÉèÖÃtimer
 					}
 				}
 			}
 		}
-		else if( pv->events & OSL_EPOLL_OUT )//æœ‰æ•°æ®è¦å‘é€
+		else if( pv->events & OSL_EPOLL_OUT )//ÓĞÊı¾İÒª·¢ËÍ
 		{
 			position = pv->data.ptr;
 			session = *m_sessions.GetValue( position );
@@ -586,21 +586,21 @@ int32_t CTcpGroup::OnDispatch()
 				}
 				else
 				{
-					if (session->m_send_datsize <= 0)//å‘é€å®Œæˆï¼Œä»é˜Ÿåˆ—ä¸­åˆ é™¤SESSION
+					if (session->m_send_datsize <= 0)//·¢ËÍÍê³É£¬´Ó¶ÓÁĞÖĞÉ¾³ıSESSION
 					{
-							if(session->GetCloseFlag())//çŸ­è¿æ¥,kill
+							if(session->GetCloseFlag())//¶ÌÁ¬½Ó,kill
 							{
 								osl_log_debug("short connection later will kill it\n");
 								CancelTimer(session->GetTimerId());
 								//KillLink(position);
-								//å°½é‡è®©å®¢æˆ·ç«¯ä¸»åŠ¨å…³é—­ï¼Œè‹¥ä¸ä¸»åŠ¨å…³é—­å°±å»¶è¿Ÿ1ç§’ç”±æœåŠ¡å™¨å…³æ‰
-								session->SetTimerId(SetTimer(session->m_link.skt_idx,position,1000));//å¾—é‡æ–°è®¾ç½®timer
+								//¾¡Á¿ÈÃ¿Í»§¶ËÖ÷¶¯¹Ø±Õ£¬Èô²»Ö÷¶¯¹Ø±Õ¾ÍÑÓ³Ù1ÃëÓÉ·şÎñÆ÷¹Øµô
+								session->SetTimerId(SetTimer(session->m_link.skt_idx,position,1000));//µÃÖØĞÂÉèÖÃtimer
 							}
 							SetEvent(session->m_link.skt,OSL_EPOLL_CTL_MOD,OSL_EPOLL_IN,position,0);
 					}
 					else
 					{
-						//æ²¡å‘å®Œï¼Œå°±æ¥ç€å‘
+						//Ã»·¢Íê£¬¾Í½Ó×Å·¢
 						SetEvent(session->m_link.skt,OSL_EPOLL_CTL_MOD,OSL_EPOLL_OUT,position,0);
 					}
 				}
@@ -610,23 +610,23 @@ int32_t CTcpGroup::OnDispatch()
 		
 	}
 
-	if(now < m_lastTick)//osl_get_ms æ—¶é—´å›æº¯äº†
+	if(now < m_lastTick)//osl_get_ms Ê±¼ä»ØËİÁË
 	{
 		osl_log_debug("func:%s time backstrace\n",__func__);
 		m_timeout.RemoveAll();
 		m_timers.RemoveAll();
-		//æ—¶é—´å›æº¯äº†ï¼Œå°±å…¨éƒ¨é‡æ–°è®¾ä¸€é
+		//Ê±¼ä»ØËİÁË£¬¾ÍÈ«²¿ÖØĞÂÉèÒ»±é
 		position = m_sessions.GetFirst( NULL );
 		while( position )
 		{
 			nextpos = m_sessions.GetNext(NULL, position);
 			session = *m_sessions.GetValue(position);
-			session->SetTimerId(SetTimer(session->m_link.skt_idx,position));//å¾—é‡æ–°è®¾ç½®timer
+			session->SetTimerId(SetTimer(session->m_link.skt_idx,position));//µÃÖØĞÂÉèÖÃtimer
 			position = nextpos;
 		}	
 	}
 	
-	HandleTimeout();//å¤„ç†è¶…æ—¶
+	HandleTimeout();//´¦Àí³¬Ê±
 
 	m_lastTick = now;
 
@@ -634,7 +634,7 @@ int32_t CTcpGroup::OnDispatch()
 }
 
 
-//å°†fdçš„æ•°æ®è¯»å®Œ
+//½«fdµÄÊı¾İ¶ÁÍê
 void CTcpGroup::ReadSocket(int32_t fd)
 {
 	//ret = read ( m_group_accpet_socket, (char *)data, sizeof(data) );
@@ -654,26 +654,26 @@ void CTcpGroup::ReadSocket(int32_t fd)
 	}
 }
 
-//è·å–å¤„ç†æ–¹å¼
+//»ñÈ¡´¦Àí·½Ê½
 int32_t CTcpGroup::GetModel()
 {
 	return m_model;
 }
 
-//å·¥ä½œçº¿ç¨‹å¤„ç†å‡½æ•°
+//¹¤×÷Ïß³Ì´¦Àíº¯Êı
 int32_t CTcpGroup::WorkProc( void* param, void* expend )
 {
 	return ((CTcpGroup *)param)->OnWork();
 }
 
-//æŠ¢å å¼å¤„ç†å‡½æ•°
+//ÇÀÕ¼Ê½´¦Àíº¯Êı
 int32_t CTcpGroup::OnWork()
 {
-	/*çº¿ç¨‹å¤„ç†æ¨¡å‹ä¸€èˆ¬æœ‰ä¸¤ç§,ä¸€ç§æ˜¯æŠ¢å å¼ï¼Œä¸€ç§æ˜¯åˆ†é…å¼ï¼ŒæŠ¢å å¼ä¸èƒ½ä¿è¯æ¶ˆæ¯çš„é¡ºåºæ€§ï¼Œåˆ†é…å¼å–æ¨¡å¯ä»¥ä¿è¯æ¶ˆæ¯çš„é¡ºåºæ€§ï¼ˆé€šè¿‡å¯¹å‘
+	/*Ïß³Ì´¦ÀíÄ£ĞÍÒ»°ãÓĞÁ½ÖÖ,Ò»ÖÖÊÇÇÀÕ¼Ê½£¬Ò»ÖÖÊÇ·ÖÅäÊ½£¬ÇÀÕ¼Ê½²»ÄÜ±£Ö¤ÏûÏ¢µÄË³ĞòĞÔ£¬·ÖÅäÊ½È¡Ä£¿ÉÒÔ±£Ö¤ÏûÏ¢µÄË³ĞòĞÔ£¨Í¨¹ı¶Ô·¢
 
-é€è€…å–æ¨¡ï¼‰ï¼Œä½†æ˜¯åˆ†é…å¼è¦åˆ†é…ä¸å‡åŒ€çš„è¯ï¼Œå¯èƒ½ä¼šå¯¼è‡´æœ‰äº›çº¿ç¨‹å¾ˆå¿™ï¼Œæœ‰äº›å´å¾ˆé—²ï¼ŒæŠ¢å å¼å°±å¯ä»¥å……åˆ†çš„åˆ©ç”¨cpuï¼Œå¯¹äºèŠå¤©çš„è¯ï¼Œæ¥æ”¶
+ËÍÕßÈ¡Ä££©£¬µ«ÊÇ·ÖÅäÊ½Òª·ÖÅä²»¾ùÔÈµÄ»°£¬¿ÉÄÜ»áµ¼ÖÂÓĞĞ©Ïß³ÌºÜÃ¦£¬ÓĞĞ©È´ºÜÏĞ£¬ÇÀÕ¼Ê½¾Í¿ÉÒÔ³ä·ÖµÄÀûÓÃcpu£¬¶ÔÓÚÁÄÌìµÄ»°£¬½ÓÊÕ
 
-ã€å¤„ç†ã€å‘é€å°±å…¨éƒ¨åœ¨Dispatchä¸­å®Œæˆï¼Œè¿™æ ·å°±å¯ä»¥ä¿è¯æœ‰åºæ€§,å¯¹äºæ™®é€šçš„httpè¯·æ±‚ï¼Œå°±å¯ä»¥ç”¨æŠ¢å å¼*/
+¡¢´¦Àí¡¢·¢ËÍ¾ÍÈ«²¿ÔÚDispatchÖĞÍê³É£¬ÕâÑù¾Í¿ÉÒÔ±£Ö¤ÓĞĞòĞÔ,¶ÔÓÚÆÕÍ¨µÄhttpÇëÇó£¬¾Í¿ÉÒÔÓÃÇÀÕ¼Ê½*/
 
 	int ret = 1;	
 	uint32_t now = osl_get_ms();
@@ -687,7 +687,7 @@ int32_t CTcpGroup::OnWork()
 	
 	if (size <= 0)
 	{		
-		//å½“pthread_cond_signal è§¦å‘æ—¶ï¼Œæ­¤waitä¼šç«‹å³é†’æ¥
+		//µ±pthread_cond_signal ´¥·¢Ê±£¬´Ëwait»áÁ¢¼´ĞÑÀ´
 		pthread_cond_wait( m_inner_cache_cond, (pthread_mutex_t*)m_inner_cache_mutex);	
 
 		size = m_innerCache.Read(&packet, buf, sizeof(buf));
@@ -721,13 +721,13 @@ RET:
 	return 0;
 }
 
-//å·¥ä½œçº¿ç¨‹å¤„ç†å‡½æ•°
+//¹¤×÷Ïß³Ì´¦Àíº¯Êı
 int32_t CTcpGroup::WorkProc1( void* param, void* expend )
 {
 	return ((CTcpGroup *)param)->OnWork1(expend);
 }
 
-//åˆ†é…å¼å¤„ç†å‡½æ•°
+//·ÖÅäÊ½´¦Àíº¯Êı
 int32_t CTcpGroup::OnWork1(void *expend)
 {
 	SPacket packet;
@@ -759,7 +759,7 @@ int32_t CTcpGroup::OnWork1(void *expend)
 
 		if(cnt > 100)
 		{
-			//æœ€å¤šæ¯æ¬¡å¤„ç†100ä¸ªï¼Œé˜²æ­¢cpuè¾¾åˆ°100%
+			//×î¶àÃ¿´Î´¦Àí100¸ö£¬·ÀÖ¹cpu´ïµ½100%
 			goto RET;
 		}
 	}
@@ -786,8 +786,8 @@ void CTcpGroup::HandleTimeout()
 		timeout = *m_timeout.GetValue(position);
 		if(timeout.currentMS < time_now)
 		{
-			//è¶…æ—¶äº†ï¼Œå¹²æ‰
-			//æ‰¾åˆ°timeid;
+			//³¬Ê±ÁË£¬¸Éµô
+			//ÕÒµ½timeid;
 			tmp_pos = m_timers.Search(&timeout.timerID,&timer);
 			if(tmp_pos)
 			{
@@ -802,13 +802,13 @@ void CTcpGroup::HandleTimeout()
 			m_timeout.RemoveByPosition(position);
 			position = nextpos;
 		}
-		else//æ ¹æ®currentMSä»å°åˆ°è¾¾æ’åºçš„
+		else//¸ù¾İcurrentMS´ÓĞ¡µ½´ïÅÅĞòµÄ
 			break;
 	}
 }
 
 
-//æ¿€æ´»æ–°è¿æ¥
+//¼¤»îĞÂÁ¬½Ó
 void* CTcpGroup::ActivateLink( STcpLink link )
 {
 	CTcpServer *server = (CTcpServer*)m_server;
@@ -817,19 +817,19 @@ void* CTcpGroup::ActivateLink( STcpLink link )
 	int32_t num;
 
 	//position = m_sessions.Search( &link.skt, &session );
-	//if( position )//å‡ºç°é‡å¤sktï¼Œåˆ é™¤æ—§çš„
+	//if( position )//³öÏÖÖØ¸´skt£¬É¾³ı¾ÉµÄ
 	//{
 	//	session->Stop();
 	//	m_sessions.RemoveByPosition( position );
 	//}
 	//else
 	num = m_dumps.GetSize();
-	if( 0 < num )//å¯»æ‰¾ä¸€ä¸ªç©ºé—²è¿æ¥å›æ”¶åˆ©ç”¨
+	if( 0 < num )//Ñ°ÕÒÒ»¸ö¿ÕÏĞÁ¬½Ó»ØÊÕÀûÓÃ
 	{
 		session = m_dumps.GetAt( num-1 );
 		m_dumps.RemoveAt( num-1 );
 	}
-	else//æ— ç©ºé—²sessionï¼Œæ–°å»º
+	else//ÎŞ¿ÕÏĞsession£¬ĞÂ½¨
 	{
 		if (server->m_proc)
 		{
@@ -852,7 +852,7 @@ void* CTcpGroup::ActivateLink( STcpLink link )
 	return position;
 }
 
-//æ€æ­»æ–°è¿æ¥ï¼ŒæœªåŠ é”å†…éƒ¨è°ƒç”¨
+//É±ËÀĞÂÁ¬½Ó£¬Î´¼ÓËøÄÚ²¿µ÷ÓÃ
 void CTcpGroup::KillLink( void *position )
 {
 	CTcpSession *session;
@@ -867,7 +867,7 @@ void CTcpGroup::KillLink( void *position )
 
 uint32_t CTcpGroup::SetTimer(uint64_t idx,void *position,int32_t timems)
 {
-	//åŠ å…¥è¶…æ—¶taskä»»åŠ¡
+	//¼ÓÈë³¬Ê±taskÈÎÎñ
 	STimer timer;
 	
 	timer.timerID  = m_timerID++;
@@ -876,7 +876,7 @@ uint32_t CTcpGroup::SetTimer(uint64_t idx,void *position,int32_t timems)
 	//task.session_pos = session_pos;
 
 	STimeout timeout;
-	timeout.currentMS = osl_get_ms() + timems;//60ç§’è¶…æ—¶
+	timeout.currentMS = osl_get_ms() + timems;//60Ãë³¬Ê±
 	timeout.timerID = timer.timerID;
 	
 	m_timers.Insert(timer);
@@ -894,7 +894,7 @@ void CTcpGroup::CancelTimer(uint32_t timerid)
 }
 
 
-//m_sessionsæ’åºæ¯”è¾ƒå‡½æ•°
+//m_sessionsÅÅĞò±È½Ïº¯Êı
 int32_t CTcpGroup::CompareSessionCallback(bool item1_is_key, void* item1, void* item2, void *param )
 {
 	int64_t  idx1, idx2;
