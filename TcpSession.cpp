@@ -116,7 +116,12 @@ void CTcpSession::Start( void *group, STcpLink link )
 		//	int ret = SSL_get_error(m_ssl,1);
 		//	osl_log_debug("%s\n",SSL_state_string_long(m_ssl));
 		//}
-		//SSL_set_mode(m_ssl,SSL_MODE_AUTO_RETRY);
+		/*SSL_write往socket缓冲区写时，如果缓冲区满了，第一次会提示 SSL_ERROR_WANT_WRITE,errno为EAGAIN,
+		 如果是默认mode，此时再SL_write往缓冲区写，就会报SSL_ERROR_SSL错误，
+		 但如果设置mode为SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER，
+		 再SL_write往缓冲区写，则会返回SSL_ERROR_WANT_WRITE，errno为EAGAIN。
+		*/
+		SSL_set_mode(m_ssl,SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
 	}
 #endif
 	
@@ -351,6 +356,7 @@ bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t
 	int32_t n = 0;
 	char_t *p = buf;
 	int32_t errcode;
+	long mode;
 
 	//osl_log_debug("n:%d  bufsize:%d errno:%d is_ssl:%d\n",n,bufsize,errno,is_ssl);
 	
@@ -404,10 +410,28 @@ bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t
 	                } else if (errno == EINTR) {
 	                    continue;
 	                }
+					else
+					{
+						osl_log_debug("======SSL_ERROR_SYSCALL code:%d \n",errno);
+						ret = false;
+						break;
+					}
 				}
 				else
 				{
-					osl_log_debug("======other code:%d \n",errcode);
+					if(errcode == SSL_ERROR_SSL)
+					{
+						/*SSL_write往socket缓冲区写时，如果缓冲区满了，第一次会提示 SSL_ERROR_WANT_WRITE,errno为EAGAIN,
+						 如果是默认mode，此时再SL_write往缓冲区写，就会报SSL_ERROR_SSL错误，
+						 但如果设置mode为SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER，
+						 再SL_write往缓冲区写，则会返回SSL_ERROR_WANT_WRITE，errno为EAGAIN。
+						 SSL_set_mode(m_ssl,SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER);
+						*/
+					
+						osl_log_debug("maybe you not set mode SSL_MODE_ACCEPT_MOVING_WRITE_BUFFER,please check your SSL_set_mode \n");
+					}
+					
+					osl_log_debug("======other errcode:%d \n",errcode);
 					ret = false;
 					break;
 				}
@@ -442,7 +466,7 @@ bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t
 			{
 				if(errno == EAGAIN)
 				{
-					osl_log_debug("again %d\n",p - buf);
+					//osl_log_debug("again %d\n",p - buf);
 					ret = true;
 					break;
 				}
@@ -459,7 +483,7 @@ bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t
 	}
 
 	*sndsize = p - buf;
-	//osl_log_debug("ret:%d *recvsize :%d\n",ret,*recvsize);
+	//osl_log_debug("ret:%d *sndsize :%d\n",ret,*sndsize);
 	return ret;
 }
 
@@ -995,7 +1019,7 @@ bool CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
 	}
 	else
 	{
-		osl_log_warn("data lost\n");
+		osl_log_warn("data lost size:%d\n",size);
 	}
 
 	return false;

@@ -588,15 +588,15 @@ int32_t CTcpGroup::OnDispatch()
 				{
 					if (session->m_send_datsize <= 0)//发送完成，从队列中删除SESSION
 					{
-							if(session->GetCloseFlag())//短连接,kill
-							{
-								osl_log_debug("short connection later will kill it\n");
-								CancelTimer(session->GetTimerId());
-								//KillLink(position);
-								//尽量让客户端主动关闭，若不主动关闭就延迟1秒由服务器关掉
-								session->SetTimerId(SetTimer(session->m_link.skt_idx,position,1000));//得重新设置timer
-							}
-							SetEvent(session->m_link.skt,OSL_EPOLL_CTL_MOD,OSL_EPOLL_IN,position,0);
+						if(session->GetCloseFlag())//短连接,kill
+						{
+							osl_log_debug("short connection later will kill it\n");
+							CancelTimer(session->GetTimerId());
+							//KillLink(position);
+							//尽量让客户端主动关闭，若不主动关闭就延迟1秒由服务器关掉
+							session->SetTimerId(SetTimer(session->m_link.skt_idx,position,1000));//得重新设置timer
+						}
+						SetEvent(session->m_link.skt,OSL_EPOLL_CTL_MOD,OSL_EPOLL_IN,position,0);
 					}
 					else
 					{
