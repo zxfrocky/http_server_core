@@ -59,7 +59,7 @@ public:
 	//要求link死亡
 	bool SetLinkDead( STcpLink link );
 	//寻找连接，已加锁线程安全
-	void* SearchLink( uint64_t *skt_idx, CTcpSession **session );
+	void* SearchLink( uint64_t skt_idx, CTcpSession **session );
 
 	//发送数据，送入缓冲立即返回，已加锁线程安全
 	bool PostData( SPacketHeader& packet_header, char_t *buf, int32_t size );
@@ -71,6 +71,7 @@ public:
 	void CancelTimer(uint32_t timerid);
 	//处理超时	
 	void HandleTimeout();
+
 	bool AddRecvBuffer(SPacket& buffer);//往抢占式队列里送,引用可以减少拷贝
 	bool AddRecvBufferToThreadQueue(SPacket& buffer);//往分配式的每个线程专属的队列里送，引用可以减少拷贝
 	//获取处理方式

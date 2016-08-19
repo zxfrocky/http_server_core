@@ -153,7 +153,7 @@ void CTcpSession::Stop()
 	m_send_datsize = 0;
 	
 	/* 1. close()是一种优雅的关闭方式，发送剩余数据之后关闭socket，不会产生大量的TIME_WAIT
-	   2. 如果linger设置了延时，close()可能会阻塞（rocky:经过验证），从而对程序逻辑产生影响
+	   2. 如果linger设置了延时，close()可能会阻塞（huanghuaming:经过验证），从而对程序逻辑产生影响
 	   3. shutdown()是一种粗暴的关闭方式，会抛弃未发送数据，立即关闭，会产生大量的TIME_WAIT
 	   4. 大量的TIME_WAIT会占用太多socket资源，超出(ulimit -n)的限制后，客户端再次连接会失败
 	   5. 要同时解决TIME_WAIT和延时的问题，最好是让client先关闭socket，server随后关闭socket
@@ -342,6 +342,123 @@ bool CTcpSession::Recv(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t
 	*recvsize = p - buf;
 	return ret;
 }
+
+bool CTcpSession::Send(void *ptr,char_t *buf,int32_t bufsize,bool is_ssl,int32_t *recvsize)
+{
+	bool ret = false;
+	SSL *ssl = NULL;
+	SOCKET skt = -1;
+	int32_t n = 0;
+	char_t *p = buf;
+	int32_t errcode;
+
+	//osl_log_debug("n:%d  bufsize:%d errno:%d is_ssl:%d\n",n,bufsize,errno,is_ssl);
+	
+	if(is_ssl)
+	{
+		ssl = (SSL*)ptr;
+		while(1)
+		{
+			n = SSL_write( ssl, p, bufsize );
+			if( n > 0)
+			{
+				p += n;
+				bufsize -= n;
+				if(bufsize <= 0)
+				{
+					ret = true;
+					break;
+				}
+					
+			}
+			else if (n == 0)
+			{
+				ret = false;
+				break;
+			}
+			else
+			{	
+				errcode = SSL_get_error(ssl, n);
+				if(errcode == SSL_ERROR_ZERO_RETURN)
+				{
+					osl_log_debug("======SSL_ERROR_ZERO_RETURN \n");
+					ret = false;
+					break;
+				}
+				else if(errcode == SSL_ERROR_WANT_WRITE)
+				{
+					//osl_log_debug("======SSL_ERROR_WANT_WRITE \n");
+					ret = true;
+					break;
+				}
+				else if(errcode == SSL_ERROR_SYSCALL)
+				{
+					osl_log_debug("======SSL_ERROR_SYSCALL \n");
+					if (errno == EAGAIN) 
+					{ 
+						ret = true;
+	                    break;
+	                } else if (errno == EINTR) {
+	                    continue;
+	                }
+				}
+				else
+				{
+					osl_log_debug("======other code:%d \n",errcode);
+					ret = false;
+					break;
+				}
+			}
+		}
+	}
+	else 
+	{
+		while(1)
+		{
+			skt = *(SOCKET*)ptr;
+			n = osl_socket_send( skt, p, bufsize );
+			//osl_log_debug("n:%d  bufsize:%d errno:%d \n",n,bufsize,errno);
+			if(n > 0)
+			{
+				p += n;
+				bufsize -= n;
+				if(bufsize <= 0)
+				{
+					ret = true;
+					break;
+				}
+
+				//osl_log_debug("n:%d  bufsize:%d errno:%d buf:%s\n",n,bufsize,errno,buf);
+			}
+			else if (n == 0)
+			{
+				ret = false;
+				break;
+			}
+			else 
+			{
+				if(errno == EAGAIN)
+				{
+					osl_log_debug("again %d\n %s\n",p - buf,buf);
+					ret = true;
+					break;
+				}
+				else if(errno == EINTR)
+					continue;
+				else
+				{
+					osl_log_debug("errno %d\n",errno);
+					ret = false;
+					break;
+				}
+			}
+		}
+	}
+
+	*recvsize = p - buf;
+	return ret;
+}
+
 
 
 bool CTcpSession::AnalysisBuf(char_t *buf,int32_t datsize,int32_t *pos)
@@ -747,13 +864,15 @@ ERROR_PACKET:
 #endif
 }
 
-//发送数据
-void CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
+//接收数据，返回true表示需socket挂了，false表示继续工作
+bool CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
 {
 	CTcpServer *svr = (CTcpServer*)GetServer();
 	STcpServerStatistics sta;
 	int32_t sndsize = 0;
+	bool flag = false;
 
+	//osl_log_debug("size :%d\n",size);
 
 	//先发送上次剩余数据
 	if (m_send_buf && 0 < m_send_datsize)
@@ -761,15 +880,22 @@ void CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
 	#ifdef _OPENSSL
 		if( m_ssl )
 		{
-			sndsize = SSL_write( m_ssl, m_send_buf, m_send_datsize );
+			//sndsize = SSL_write( m_ssl, m_send_buf, m_send_datsize );
+			flag = Send(m_ssl,m_send_buf,m_send_datsize,true,&sndsize);
 		}
 		else
 		{
-			sndsize = osl_socket_send( m_link.skt, m_send_buf, m_send_datsize );
+			//sndsize = osl_socket_send( m_link.skt, m_send_buf, m_send_datsize );
+			flag = Send(&m_link.skt,m_send_buf,m_send_datsize,false,&sndsize);
 		}
 	#else
-		sndsize = osl_socket_send( m_link.skt, m_send_buf, m_send_datsize );
+		//sndsize = osl_socket_send( m_link.skt, m_send_buf, m_send_datsize );
+		flag = Send(&m_link.skt,m_send_buf,m_send_datsize,false,&sndsize);
 	#endif
+
+		if(!flag)
+			return true;
+		
 		if( 0 < sndsize )
 		{
 			m_send_datsize -= sndsize;
@@ -788,18 +914,25 @@ void CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
 	//发送本次数据
 	if (m_send_buf == NULL || m_send_datsize <= 0)
 	{
+		sndsize = 0;
 	#ifdef _OPENSSL
 		if( m_ssl )
 		{
-			sndsize = SSL_write( m_ssl, buf, size );
+			//sndsize = SSL_write( m_ssl, buf, size );
+			flag = Send(m_ssl,buf,size,true,&sndsize);
 		}
 		else
 		{
-			sndsize = osl_socket_send( m_link.skt,  buf, size );
+			//sndsize = osl_socket_send( m_link.skt,  buf, size );
+			flag = Send(&m_link.skt,buf,size,false,&sndsize);
 		}
 	#else
-		sndsize = osl_socket_send( m_link.skt, buf, size );
+		//sndsize = osl_socket_send( m_link.skt, buf, size );
+		flag = Send(&m_link.skt,buf,size,false,&sndsize);
 	#endif
+
+		if(!flag)
+			return true;
 		if( 0 < sndsize )//将剩余数据存入m_send_buf
 		{
 			m_send_datsize = size - sndsize;
@@ -847,6 +980,8 @@ void CTcpSession::OnSend( char_t *buf, int32_t size, uint32_t now )
 	{
 		osl_log_warn("data lost\n");
 	}
+
+	return false;
 }
 
 //发送外部数据(不能多线程同时执行）
