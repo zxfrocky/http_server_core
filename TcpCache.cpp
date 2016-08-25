@@ -65,7 +65,7 @@ bool CTcpCache<TYPE>::Post( TYPE& packet_header, char_t *buf, int32_t size )
 	{
 		//link(x)+size(4)+buf(size) + link(x)+size(4)+buf(size) + ...
 		
-		memcpy(tmp, &packet_header, sizeof(packet_header));
+		memcpy(tmp, &packet_header, sizeof(TYPE));
 		memcpy(tmp+sizeof(TYPE), &size, 4);
 
 		//---h----t---
