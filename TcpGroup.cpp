@@ -113,8 +113,8 @@ bool CTcpGroup::Start( void *server, int32_t cpu_idx,int32_t thread_num ,int32_t
 		if(work_thread_num > 0)
 		{
 			m_innerCache.Create(g_settings.group_cache_size*1024*1024);//
-			m_inner_cache_mutex = osl_mutex_create();//m_recvbufQueue 锁
-			m_inner_cache_cond = (pthread_cond_t*)malloc(sizeof(pthread_cond_t));//与m_recvbuf_queue_mutex 配套使用
+			m_inner_cache_mutex = osl_mutex_create();//m_innerCache 锁
+			m_inner_cache_cond = (pthread_cond_t*)malloc(sizeof(pthread_cond_t));//与m_inner_cache_mutex 配套使用
 			pthread_cond_init( m_inner_cache_cond, NULL );
 
 			for(int i = 0;i< work_thread_num ;i++)
@@ -316,36 +316,6 @@ void CTcpGroup::SetLinkBorn( STcpLink link )
 				m_server_accpet_socket, ret, errno, strerror(errno) );
 		}
 	}
-}
-
-//要求link死亡
-bool CTcpGroup::SetLinkDead( STcpLink link )
-{
-	bool ret = false;
-	CTcpSession* session;
-
-	osl_rwlock_read_lock(m_rwlock);
-	if (m_sessions.Search(&link.skt, &session))
-	{
-		if (link.remote_ip == session->m_link.remote_ip && 
-			link.remote_port == session->m_link.remote_port)
-		{
-			session->SetDead( true );
-			ret = true;
-		}
-	}
-	osl_rwlock_read_unlock(m_rwlock);
-	return ret;
-}
-
-//寻找session
-void* CTcpGroup::SearchLink( uint64_t skt_idx, CTcpSession **session )
-{
-	void *position = NULL;
-
-	position = m_sessions.Search(&skt_idx, session);
-
-	return position;
 }
 
 //发送数据，送入缓冲立即返回，已加锁线程安全
@@ -671,9 +641,7 @@ int32_t CTcpGroup::OnWork()
 {
 	/*线程处理模型一般有两种,一种是抢占式，一种是分配式，抢占式不能保证消息的顺序性，分配式取模可以保证消息的顺序性（通过对发
 
-送者取模），但是分配式要分配不均匀的话，可能会导致有些线程很忙，有些却很闲，抢占式就可以充分的利用cpu，对于聊天的话，接收
-
-、处理、发送就全部在Dispatch中完成，这样就可以保证有序性,对于普通的http请求，就可以用抢占式*/
+送者取模），但是分配式要分配不均匀的话，可能会导致有些线程很忙，有些却很闲，抢占式就可以充分的利用cpu,对于普通的http请求，就可以用抢占式*/
 
 	int ret = 1;	
 	uint32_t now = osl_get_ms();

@@ -26,7 +26,6 @@ CTcpServer::CTcpServer()
 	m_listen_port = 0;
 	m_ssl_flag = false;
 	memset(&m_statistics, 0, sizeof(m_statistics));
-	m_group_idx = 0;
 
 	m_thread = NULL;
 	m_proc = NULL;
@@ -65,7 +64,6 @@ bool CTcpServer::Initialize( uint32_t listen_ip, uint16_t listen_port, bool ssl_
 	m_listen_port = 0;
 	m_ssl_flag = false;
 	memset(&m_statistics, 0, sizeof(m_statistics));
-	m_group_idx = 0;
 	m_thread = NULL;
 	m_proc = NULL;
 	m_param = NULL;
@@ -206,7 +204,6 @@ void CTcpServer::Release()
 	CTcpGroup *grp;
 	int32_t i;
 
-
 	if( m_thread )
 	{
 		osl_thread_destroy( m_thread, -1 );
@@ -239,20 +236,6 @@ void CTcpServer::Release()
 bool CTcpServer::IsInitialized()
 {
 	return m_thread != NULL;
-}
-
-//断开会话
-void CTcpServer::KillLink(STcpLink link)
-{
-	int32_t i;
-	CTcpGroup *grp;
-
-	for (i=0; i<m_groups.GetSize(); i++)
-	{
-		grp = m_groups[i];
-		if (grp->SetLinkDead(link))
-			break;
-	}
 }
 
 //发送数据，送入缓冲立即返回，已加锁线程安全

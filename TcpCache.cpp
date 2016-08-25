@@ -66,13 +66,13 @@ bool CTcpCache<TYPE>::Post( TYPE& packet_header, char_t *buf, int32_t size )
 		//link(x)+size(4)+buf(size) + link(x)+size(4)+buf(size) + ...
 		
 		memcpy(tmp, &packet_header, sizeof(packet_header));
-		memcpy(tmp+sizeof(packet_header), &size, 4);
+		memcpy(tmp+sizeof(TYPE), &size, 4);
 
 		//---h----t---
 		if (h < t)
 		{
 			cpysize = m_bufsize - t;
-			if (tmp_size < cpysize)
+			if (tmp_size <= cpysize)
 			{
 				memcpy(m_buf+t, tmp, tmp_size);
 			}
@@ -149,6 +149,12 @@ int32_t CTcpCache<TYPE>::Read( TYPE *link, char_t *buf, int32_t size )
 			p[i] = m_buf[(h+i)%m_bufsize];
 		real_pktsize = pktsize; // 保存解析出来的记录长度
 		h = (h + 4) % m_bufsize;
+
+		if(pktsize > size)
+		{
+			osl_log_error("real_pktsize:%d size:%d size too small\n",real_pktsize,size);
+			pktsize = size;
+		}
 
 		if (sizeof(TYPE) + 4 + pktsize <= datsize)
 		{

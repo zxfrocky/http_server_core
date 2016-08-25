@@ -45,9 +45,6 @@ public:
 	//是否已经初始化
 	bool IsInitialized();
 
-	//断开会话
-	void KillLink(STcpLink link);
-
 	//发送数据，送入缓冲立即返回，已加锁线程安全
 	bool PostData( STcpLink link, char_t *buf, int32_t size );
 
@@ -71,7 +68,6 @@ protected:
 	STcpServerStatistics m_statistics;//统计信息
 
 	CXtcArray<CTcpGroup*> m_groups;//所有客户端连接的工作线程池
-	int32_t m_group_idx;//m_groups的活动序号
 
 	void* m_thread;
 
@@ -84,8 +80,6 @@ private:
 	//监听处理函数
 	int32_t OnListen();
 
-	/*sockepair 保存对象*/
-	int32_t **_fd;
 	uint64_t m_skt_idx;//socket唯一识别计数器,uint64_t一辈子也用不完
 };
 
