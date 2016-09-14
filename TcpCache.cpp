@@ -69,7 +69,7 @@ bool CTcpCache<TYPE>::Post( TYPE& packet_header, char_t *buf, int32_t size )
 		memcpy(tmp+sizeof(TYPE), &size, 4);
 
 		//---h----t---
-		if (h < t)
+		if (h <= t)
 		{
 			cpysize = m_bufsize - t;
 			if (tmp_size <= cpysize)
@@ -94,7 +94,7 @@ bool CTcpCache<TYPE>::Post( TYPE& packet_header, char_t *buf, int32_t size )
 
 
 		//---h----t---
-		if (h < t)
+		if (h <= t)
 		{
 			cpysize = m_bufsize - t;
 			if (size < cpysize)
