@@ -797,6 +797,9 @@ void CTcpGroup::HandleTimeout()
 					KillLink( timer.position);
 					osl_log_debug("socket idx:%lld timeout kill it\n",timer.skt_idx);
 				}
+
+				//É¾µôtimerID 
+				m_timers.RemoveByPosition(tmp_pos);
 			}
 
 			m_timeout.RemoveByPosition(position);
