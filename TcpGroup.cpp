@@ -224,7 +224,7 @@ void CTcpGroup::Stop()
         }
     }
 
-	for(int i=0;i<m_work_thread.GetSize();i++)
+	for(int i=0;i<m_order_work_thread.GetSize();i++)
     {
         if(m_order_work_thread[i]->m_thread)
         {
